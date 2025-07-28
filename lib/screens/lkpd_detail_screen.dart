@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/content_models.dart';
 import '../repositories/repositories.dart';
 import '../widgets/custom_button.dart';
+import 'kerjakan_screen.dart';
 
 class LkpdDetailScreen extends StatefulWidget {
   final LKPD lkpd;
@@ -190,10 +191,10 @@ class _LkpdDetailScreenState extends State<LkpdDetailScreen> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          // In a real app, this would navigate to the LKPD working interface
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Fitur mengerjakan LKPD belum tersedia'),
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => KerjakanScreen(lkpd: widget.lkpd),
             ),
           );
         },

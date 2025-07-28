@@ -636,11 +636,11 @@ class _VideoScreenState extends State<VideoScreen> {
                   ),
                 ),
                 // Play button overlay
-                const Icon(
-                  Icons.play_circle_fill,
-                  size: 48,
-                  color: Colors.white,
-                ),
+                // const Icon(
+                //   Icons.play_circle_fill,
+                //   size: 62,
+                //   color: Colors.white,
+                // ),
                 // Duration badge
                 Positioned(
                   bottom: 8,
