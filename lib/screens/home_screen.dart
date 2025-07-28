@@ -3,6 +3,7 @@ import '../widgets/custom_button.dart';
 import '../repositories/repositories.dart';
 import '../models/content_models.dart';
 import 'materi_screen.dart';
+import 'profil_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
     const MateriScreen(),
     const _PlaceholderScreen(title: 'Video'),
     const _PlaceholderScreen(title: 'Artikel'),
-    const _PlaceholderScreen(title: 'Profil'),
+    const ProfilScreen(),
   ];
 
   @override
