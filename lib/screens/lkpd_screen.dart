@@ -15,8 +15,8 @@ class _LkpdScreenState extends State<LkpdScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _selectedCategory = 'Semua';
   String _selectedType = 'Semua';
-  List<LKPD> _filteredLkpds = [];
   bool _showOnlyCompleted = false;
+  List<LKPD> _filteredLkpds = [];
 
   // Define all categories
   final List<String> _categories = [
@@ -29,7 +29,7 @@ class _LkpdScreenState extends State<LkpdScreen> {
     'Sosial',
   ];
 
-  // Define all LKPD types
+  // Define all types
   final List<String> _types = [
     'Semua',
     'Pilihan Ganda',
@@ -115,98 +115,89 @@ class _LkpdScreenState extends State<LkpdScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                // Category Filter Header
-                const Text(
-                  'Kategori',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8),
+                // Category and Filter Tabs
+                Row(
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: _categories.map((category) {
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: FilterChip(
+                                label: Text(category),
+                                selected: _selectedCategory == category,
+                                onSelected: (selected) {
+                                  setState(() {
+                                    _selectedCategory = category;
+                                    _filterLkpds();
+                                  });
+                                },
+                                backgroundColor: Colors.grey.shade200,
+                                selectedColor: Theme.of(
+                                  context,
+                                ).colorScheme.primary.withOpacity(0.2),
+                                checkmarkColor: Theme.of(
+                                  context,
+                                ).colorScheme.primary,
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
 
-                // Category Filter Chips
+                    // Completed filter
+                    FilterChip(
+                      label: const Text('Selesai'),
+                      selected: _showOnlyCompleted,
+                      onSelected: (selected) {
+                        setState(() {
+                          _showOnlyCompleted = selected;
+                          _filterLkpds();
+                        });
+                      },
+                      backgroundColor: Colors.grey.shade200,
+                      selectedColor: Colors.green.withOpacity(0.2),
+                      checkmarkColor: Colors.green,
+                      avatar: Icon(
+                        Icons.check_circle,
+                        color: _showOnlyCompleted ? Colors.green : Colors.grey,
+                        size: 18,
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 16),
+
+                // Type Filters
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
-                    children: _categories.map((category) {
+                    children: _types.map((type) {
                       return Padding(
                         padding: const EdgeInsets.only(right: 8),
                         child: FilterChip(
-                          label: Text(category),
-                          selected: _selectedCategory == category,
+                          label: Text(type),
+                          selected: _selectedType == type,
                           onSelected: (selected) {
                             setState(() {
-                              _selectedCategory = category;
+                              _selectedType = type;
                               _filterLkpds();
                             });
                           },
                           backgroundColor: Colors.grey.shade200,
                           selectedColor: Theme.of(
                             context,
-                          ).colorScheme.primary.withOpacity(0.2),
-                          checkmarkColor: Theme.of(context).colorScheme.primary,
+                          ).colorScheme.secondary.withOpacity(0.2),
+                          checkmarkColor: Theme.of(
+                            context,
+                          ).colorScheme.secondary,
                         ),
                       );
                     }).toList(),
-                  ),
-                ),
-                const SizedBox(height: 12),
-
-                // Type Filter Header
-                const Text(
-                  'Jenis',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8),
-
-                // Type Filter Chips
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      ..._types.map((type) {
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 8),
-                          child: FilterChip(
-                            label: Text(type),
-                            selected: _selectedType == type,
-                            onSelected: (selected) {
-                              setState(() {
-                                _selectedType = type;
-                                _filterLkpds();
-                              });
-                            },
-                            backgroundColor: Colors.grey.shade200,
-                            selectedColor: Theme.of(
-                              context,
-                            ).colorScheme.secondary.withOpacity(0.2),
-                            checkmarkColor: Theme.of(
-                              context,
-                            ).colorScheme.secondary,
-                          ),
-                        );
-                      }).toList(),
-
-                      // Completed filter
-                      FilterChip(
-                        label: const Text('Selesai'),
-                        selected: _showOnlyCompleted,
-                        onSelected: (selected) {
-                          setState(() {
-                            _showOnlyCompleted = selected;
-                            _filterLkpds();
-                          });
-                        },
-                        backgroundColor: Colors.grey.shade200,
-                        selectedColor: Colors.green.withOpacity(0.2),
-                        checkmarkColor: Colors.green,
-                        avatar: Icon(
-                          Icons.check_circle,
-                          color: _showOnlyCompleted
-                              ? Colors.green
-                              : Colors.grey,
-                          size: 18,
-                        ),
-                      ),
-                    ],
                   ),
                 ),
               ],
@@ -216,12 +207,12 @@ class _LkpdScreenState extends State<LkpdScreen> {
           // LKPD List
           Expanded(
             child: _filteredLkpds.isEmpty
-                ? _buildEmptyState()
+                ? _buildEmptyState(context)
                 : ListView.builder(
                     padding: const EdgeInsets.all(16.0),
                     itemCount: _filteredLkpds.length,
                     itemBuilder: (context, index) {
-                      return _buildLkpdCard(_filteredLkpds[index]);
+                      return _buildLkpdCard(context, _filteredLkpds[index]);
                     },
                   ),
           ),
@@ -230,7 +221,7 @@ class _LkpdScreenState extends State<LkpdScreen> {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(BuildContext context) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -269,7 +260,7 @@ class _LkpdScreenState extends State<LkpdScreen> {
     );
   }
 
-  Widget _buildLkpdCard(LKPD lkpd) {
+  Widget _buildLkpdCard(BuildContext context, LKPD lkpd) {
     return Card(
       margin: const EdgeInsets.only(bottom: 16.0),
       elevation: 2,
@@ -289,7 +280,7 @@ class _LkpdScreenState extends State<LkpdScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Category and Type
+              // Category and Date
               Row(
                 children: [
                   Container(
@@ -364,32 +355,56 @@ class _LkpdScreenState extends State<LkpdScreen> {
               ),
               const SizedBox(height: 12),
 
-              // Details Row
+              // Info row
               Row(
                 children: [
-                  _buildIconWithText(
+                  const Icon(
                     Icons.question_answer,
-                    '${lkpd.questionCount} soal',
+                    size: 16,
+                    color: Colors.grey,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    '${lkpd.questionCount} Soal',
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
                   ),
                   const SizedBox(width: 16),
-                  _buildIconWithText(
-                    Icons.timer,
-                    '${lkpd.estimatedTimeMinutes} menit',
+                  const Icon(Icons.timer, size: 16, color: Colors.grey),
+                  const SizedBox(width: 4),
+                  Text(
+                    '${lkpd.estimatedTimeMinutes} Menit',
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
                   ),
                   const Spacer(),
-                  CustomButton(
-                    label: 'Kerjakan',
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => LkpdDetailScreen(lkpd: lkpd),
-                        ),
-                      );
-                    },
-                    small: true,
+                  const Icon(
+                    Icons.calendar_today,
+                    size: 16,
+                    color: Colors.grey,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    _formatDate(lkpd.createdAt),
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
                   ),
                 ],
+              ),
+              const SizedBox(height: 12),
+
+              // Button
+              SizedBox(
+                width: double.infinity,
+                child: CustomButton(
+                  label: lkpd.isCompleted ? 'Review Kembali' : 'Kerjakan LKPD',
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LkpdDetailScreen(lkpd: lkpd),
+                      ),
+                    );
+                  },
+                  small: true,
+                ),
               ),
             ],
           ),
@@ -398,13 +413,21 @@ class _LkpdScreenState extends State<LkpdScreen> {
     );
   }
 
-  Widget _buildIconWithText(IconData icon, String text) {
-    return Row(
-      children: [
-        Icon(icon, size: 16, color: Colors.grey.shade600),
-        const SizedBox(width: 4),
-        Text(text, style: TextStyle(color: Colors.grey.shade600, fontSize: 12)),
-      ],
-    );
+  String _formatDate(DateTime date) {
+    final months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'Mei',
+      'Jun',
+      'Jul',
+      'Ags',
+      'Sep',
+      'Okt',
+      'Nov',
+      'Des',
+    ];
+    return '${date.day} ${months[date.month - 1]} ${date.year}';
   }
 }
