@@ -36,6 +36,8 @@ class LKPD extends Content {
   final int questionCount;
   final String type; // multiple-choice, essay, etc.
   final int estimatedTimeMinutes;
+  final int? score; // null if not taken yet
+  final DateTime? completedAt;
 
   LKPD({
     required super.id,
@@ -47,6 +49,8 @@ class LKPD extends Content {
     required this.questionCount,
     required this.type,
     required this.estimatedTimeMinutes,
+    this.score,
+    this.completedAt,
   });
 }
 

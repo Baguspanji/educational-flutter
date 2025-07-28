@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/content_models.dart';
 import '../repositories/repositories.dart';
 import '../widgets/custom_button.dart';
-import 'kerjakan_screen.dart';
+import 'lkpd_kerjakan_screen.dart';
 
 class LkpdDetailScreen extends StatefulWidget {
   final LKPD lkpd;
@@ -77,6 +77,12 @@ class _LkpdDetailScreenState extends State<LkpdDetailScreen> {
                 ),
                 const SizedBox(height: 16),
 
+                // Score badge if completed
+                if (_isCompleted && widget.lkpd.score != null)
+                  _buildScoreBadge(),
+
+                const SizedBox(height: 16),
+
                 // Metadata Row
                 Row(
                   children: [
@@ -122,6 +128,12 @@ class _LkpdDetailScreenState extends State<LkpdDetailScreen> {
 
                 // Content Card
                 _buildLkpdContentCard(),
+                const SizedBox(height: 24),
+
+                // Previous Result if completed
+                if (_isCompleted && widget.lkpd.completedAt != null)
+                  _buildPreviousResultCard(),
+
                 const SizedBox(height: 24),
 
                 // Mark as completed button
@@ -194,7 +206,7 @@ class _LkpdDetailScreenState extends State<LkpdDetailScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => KerjakanScreen(lkpd: widget.lkpd),
+              builder: (context) => LkpdKerjakanScreen(lkpd: widget.lkpd),
             ),
           );
         },
@@ -299,6 +311,112 @@ class _LkpdDetailScreenState extends State<LkpdDetailScreen> {
           ),
           Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
         ],
+      ),
+    );
+  }
+
+  Widget _buildScoreBadge() {
+    final score = widget.lkpd.score ?? 0;
+    Color scoreColor = score >= 80
+        ? Colors.green
+        : score >= 60
+        ? Colors.orange
+        : Colors.red;
+
+    return Center(
+      child: Container(
+        width: 110,
+        height: 110,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: scoreColor.withOpacity(0.1),
+          border: Border.all(color: scoreColor, width: 3),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                '${widget.lkpd.score}%',
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: scoreColor,
+                ),
+              ),
+              Text('Nilai', style: TextStyle(fontSize: 14, color: scoreColor)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  String _formatDate(DateTime date) {
+    final months = [
+      'Januari',
+      'Februari',
+      'Maret',
+      'April',
+      'Mei',
+      'Juni',
+      'Juli',
+      'Agustus',
+      'September',
+      'Oktober',
+      'November',
+      'Desember',
+    ];
+    return '${date.day} ${months[date.month - 1]} ${date.year}';
+  }
+
+  Widget _buildPreviousResultCard() {
+    final dateStr = _formatDate(widget.lkpd.completedAt!);
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.history, color: Colors.blueGrey),
+                const SizedBox(width: 8),
+                Text(
+                  'Hasil LKPD Terakhir',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            _buildInfoRow('Nilai', '${widget.lkpd.score}%'),
+            const Divider(),
+            _buildInfoRow('Dikerjakan Pada', dateStr),
+            const SizedBox(height: 16),
+            Center(
+              child: CustomButton(
+                label: 'Lihat Detail Hasil',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LkpdKerjakanScreen(
+                        lkpd: widget.lkpd,
+                        showResults: true,
+                      ),
+                    ),
+                  );
+                },
+                small: true,
+                backgroundColor: Colors.teal,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

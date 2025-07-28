@@ -48,6 +48,8 @@ class LkpdRepository {
       type: 'Essay',
       estimatedTimeMinutes: 90,
       isCompleted: true,
+      score: 85,
+      completedAt: DateTime(2025, 7, 10),
     ),
     LKPD(
       id: 'lkpd-005',
@@ -58,6 +60,9 @@ class LkpdRepository {
       questionCount: 12,
       type: 'Isian',
       estimatedTimeMinutes: 40,
+      isCompleted: true,
+      score: 72,
+      completedAt: DateTime(2025, 7, 25),
     ),
     LKPD(
       id: 'lkpd-006',
@@ -68,6 +73,33 @@ class LkpdRepository {
       questionCount: 10,
       type: 'Observasi & Laporan',
       estimatedTimeMinutes: 120,
+    ),
+    LKPD(
+      id: 'lkpd-007',
+      title: 'Latihan Soal Statistika Dasar',
+      category: 'Matematika',
+      createdAt: DateTime(2025, 7, 5),
+      description:
+          'Latihan statistika dasar: rata-rata, median, modus, dan standar deviasi',
+      questionCount: 20,
+      type: 'Pilihan Ganda',
+      estimatedTimeMinutes: 45,
+      isCompleted: true,
+      score: 95,
+      completedAt: DateTime(2025, 7, 19),
+    ),
+    LKPD(
+      id: 'lkpd-008',
+      title: 'Praktikum Elektromagnetik',
+      category: 'Fisika',
+      createdAt: DateTime(2025, 7, 10),
+      description: 'Praktikum dan pengenalan konsep dasar elektromagnetik',
+      questionCount: 8,
+      type: 'Praktikum',
+      estimatedTimeMinutes: 90,
+      isCompleted: true,
+      score: 55,
+      completedAt: DateTime(2025, 7, 21),
     ),
   ];
 

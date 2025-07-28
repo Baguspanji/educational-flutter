@@ -325,11 +325,41 @@ class _LkpdScreenState extends State<LkpdScreen> {
                     ),
                   ),
                   const Spacer(),
-                  if (lkpd.isCompleted)
+                  if (lkpd.isCompleted && lkpd.score == null)
                     const Icon(
                       Icons.check_circle,
                       color: Colors.green,
                       size: 16,
+                    )
+                  else if (lkpd.score != null)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: _getScoreColor(lkpd.score!).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.star,
+                            color: _getScoreColor(lkpd.score!),
+                            size: 12,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            'Nilai: ${lkpd.score}%',
+                            style: TextStyle(
+                              color: _getScoreColor(lkpd.score!),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                 ],
               ),
@@ -375,6 +405,23 @@ class _LkpdScreenState extends State<LkpdScreen> {
                     '${lkpd.estimatedTimeMinutes} Menit',
                     style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
                   ),
+                  if (lkpd.score != null) ...[
+                    const SizedBox(width: 16),
+                    Icon(
+                      Icons.star,
+                      size: 16,
+                      color: _getScoreColor(lkpd.score!),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      '${lkpd.score}%',
+                      style: TextStyle(
+                        color: _getScoreColor(lkpd.score!),
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                   const Spacer(),
                   const Icon(
                     Icons.calendar_today,
@@ -394,7 +441,9 @@ class _LkpdScreenState extends State<LkpdScreen> {
               SizedBox(
                 width: double.infinity,
                 child: CustomButton(
-                  label: lkpd.isCompleted ? 'Review Kembali' : 'Kerjakan LKPD',
+                  label: lkpd.score != null
+                      ? 'Lihat Hasil'
+                      : (lkpd.isCompleted ? 'Review Kembali' : 'Kerjakan LKPD'),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -404,6 +453,9 @@ class _LkpdScreenState extends State<LkpdScreen> {
                     );
                   },
                   small: true,
+                  backgroundColor: lkpd.score != null
+                      ? _getScoreColor(lkpd.score!)
+                      : null,
                 ),
               ),
             ],
@@ -429,5 +481,15 @@ class _LkpdScreenState extends State<LkpdScreen> {
       'Des',
     ];
     return '${date.day} ${months[date.month - 1]} ${date.year}';
+  }
+
+  Color _getScoreColor(int score) {
+    if (score >= 80) {
+      return Colors.green;
+    } else if (score >= 60) {
+      return Colors.orange;
+    } else {
+      return Colors.red;
+    }
   }
 }

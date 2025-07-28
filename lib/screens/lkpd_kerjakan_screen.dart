@@ -1,29 +1,74 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import '../models/content_models.dart';
 import '../widgets/custom_button.dart';
 
 enum IconPosition { before, after }
 
-class KerjakanScreen extends StatefulWidget {
+class LkpdKerjakanScreen extends StatefulWidget {
   final LKPD lkpd;
+  final bool showResults;
 
-  const KerjakanScreen({super.key, required this.lkpd});
+  const LkpdKerjakanScreen({
+    super.key,
+    required this.lkpd,
+    this.showResults = false,
+  });
 
   @override
-  State<KerjakanScreen> createState() => _KerjakanScreenState();
+  State<LkpdKerjakanScreen> createState() => _LkpdKerjakanScreenState();
 }
 
-class _KerjakanScreenState extends State<KerjakanScreen> {
+class _LkpdKerjakanScreenState extends State<LkpdKerjakanScreen> {
   int _currentQuestionIndex = 0;
   late final List<Question> _questions;
   late final Map<int, dynamic> _answers;
   bool _isLoading = true;
   bool _showingSummary = false;
 
+  // Timer related
+  late Timer _timer;
+  int _remainingSeconds = 0;
+  bool _isTimerRunning = false;
+
   @override
   void initState() {
     super.initState();
     _loadQuestions();
+
+    // Set timer if not in results mode
+    if (!widget.showResults) {
+      _remainingSeconds = widget.lkpd.estimatedTimeMinutes * 60;
+    }
+  }
+
+  @override
+  void dispose() {
+    if (_isTimerRunning) {
+      _timer.cancel();
+    }
+    super.dispose();
+  }
+
+  void _startTimer() {
+    _isTimerRunning = true;
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        if (_remainingSeconds > 0) {
+          _remainingSeconds--;
+        } else {
+          _timer.cancel();
+          _isTimerRunning = false;
+          _submitAnswers();
+        }
+      });
+    });
+  }
+
+  String _formatTime(int totalSeconds) {
+    final minutes = totalSeconds ~/ 60;
+    final seconds = totalSeconds % 60;
+    return '$minutes:${seconds.toString().padLeft(2, '0')}';
   }
 
   Future<void> _loadQuestions() async {
@@ -38,6 +83,24 @@ class _KerjakanScreenState extends State<KerjakanScreen> {
       );
       _answers = {};
       _isLoading = false;
+
+      // Start timer if not in results mode
+      if (!widget.showResults && !_isTimerRunning) {
+        _startTimer();
+      }
+
+      // If showing results, simulate completed answers
+      if (widget.showResults) {
+        _showingSummary = true;
+        // Simulate answers (in a real app, these would come from the backend)
+        for (int i = 0; i < _questions.length; i++) {
+          if (_questions[i] is MultipleChoiceQuestion) {
+            _answers[i] = i % 4; // Just a pattern for demo
+          } else if (_questions[i] is TrueFalseQuestion) {
+            _answers[i] = i % 2 == 0; // Alternating true/false
+          }
+        }
+      }
     });
   }
 
@@ -194,7 +257,18 @@ class _KerjakanScreenState extends State<KerjakanScreen> {
                 const Spacer(),
                 const Icon(Icons.timer, size: 16),
                 const SizedBox(width: 4),
-                Text('${widget.lkpd.estimatedTimeMinutes} menit'),
+                if (widget.showResults || !_isTimerRunning)
+                  Text('${widget.lkpd.estimatedTimeMinutes} menit')
+                else
+                  Text(
+                    _formatTime(_remainingSeconds),
+                    style: TextStyle(
+                      color: _remainingSeconds < 60 ? Colors.red : null,
+                      fontWeight: _remainingSeconds < 60
+                          ? FontWeight.bold
+                          : null,
+                    ),
+                  ),
               ],
             ),
           ),
@@ -436,7 +510,7 @@ class _KerjakanScreenState extends State<KerjakanScreen> {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // Score card
             Card(
