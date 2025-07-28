@@ -40,6 +40,12 @@ dependencies:
   
   # For state management if needed
   provider: ^6.1.2
+  
+  # For video playback
+  chewie: ^1.7.5
+  video_player: ^2.8.2
+  youtube_player_flutter: ^9.0.0
+  cached_network_image: ^3.3.1
 
 dev_dependencies:
   flutter_test:

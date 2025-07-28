@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:video_player/video_player.dart';
+import 'package:chewie/chewie.dart';
 import '../models/content_models.dart';
 import '../repositories/repositories.dart';
 import '../widgets/custom_button.dart';
@@ -17,10 +21,19 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
   final ScrollController _scrollController = ScrollController();
   bool _showBackToTop = false;
 
+  // Variables for video playback
+  YoutubePlayerController? _youtubeController;
+  VideoPlayerController? _videoPlayerController;
+  ChewieController? _chewieController;
+  bool _isVideoInitialized = false;
+  bool _isYoutubeVideo = false;
+  bool _isNetworkVideo = false;
+
   @override
   void initState() {
     super.initState();
     _isCompleted = widget.video.isCompleted;
+    _initializeVideoPlayer();
 
     _scrollController.addListener(() {
       if (_scrollController.position.pixels > 300 && !_showBackToTop) {
@@ -35,10 +48,215 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
     });
   }
 
+  void _initializeVideoPlayer() {
+    final videoUrl = widget.video.videoUrl;
+
+    // Check if it's a YouTube video
+    if (videoUrl.contains('youtube.com') || videoUrl.contains('youtu.be')) {
+      String? videoId = YoutubePlayer.convertUrlToId(videoUrl);
+      if (videoId != null) {
+        _youtubeController = YoutubePlayerController(
+          initialVideoId: videoId,
+          flags: const YoutubePlayerFlags(
+            autoPlay: true,
+            mute: false,
+            disableDragSeek: false,
+            loop: false,
+            enableCaption: true,
+            showLiveFullscreenButton: false,
+          ),
+        );
+        setState(() {
+          _isVideoInitialized = true;
+          _isYoutubeVideo = true;
+        });
+      }
+    }
+    // Check if it's a network video (MP4, etc.)
+    else if (videoUrl.startsWith('http') &&
+        (videoUrl.endsWith('.mp4') ||
+            videoUrl.endsWith('.mov') ||
+            videoUrl.endsWith('.avi') ||
+            videoUrl.endsWith('.mkv'))) {
+      _videoPlayerController = VideoPlayerController.networkUrl(
+        Uri.parse(videoUrl),
+      );
+      _videoPlayerController!.initialize().then((_) {
+        // After initialization, create the Chewie controller
+        _chewieController = ChewieController(
+          videoPlayerController: _videoPlayerController!,
+          autoPlay: true,
+          looping: false,
+          allowFullScreen: true,
+          showControlsOnInitialize: false,
+          allowMuting: true,
+          placeholder: Container(
+            color: Colors.black,
+            child: const Center(child: CircularProgressIndicator()),
+          ),
+          materialProgressColors: ChewieProgressColors(
+            playedColor: Theme.of(context).colorScheme.primary,
+            handleColor: Theme.of(context).colorScheme.primary,
+            backgroundColor: Colors.grey,
+            bufferedColor: Theme.of(
+              context,
+            ).colorScheme.primary.withOpacity(0.5),
+          ),
+        );
+
+        // Listen for video completion
+        _videoPlayerController!.addListener(_onVideoPositionChanged);
+
+        setState(() {
+          _isVideoInitialized = true;
+          _isNetworkVideo = true;
+        });
+      });
+    }
+  }
+
+  void _onVideoPositionChanged() {
+    if (_videoPlayerController != null &&
+        _videoPlayerController!.value.isInitialized &&
+        _videoPlayerController!.value.position >=
+            _videoPlayerController!.value.duration -
+                const Duration(seconds: 1)) {
+      // The video has reached the end
+      if (!_isCompleted) {
+        setState(() {
+          _isCompleted = true;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Video ditandai sebagai selesai'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    }
+  }
+
   @override
   void dispose() {
     _scrollController.dispose();
+    if (_isVideoInitialized) {
+      if (_isYoutubeVideo && _youtubeController != null) {
+        _youtubeController!.dispose();
+      }
+      if (_isNetworkVideo) {
+        _videoPlayerController?.removeListener(_onVideoPositionChanged);
+        _chewieController?.dispose();
+        _videoPlayerController?.dispose();
+      }
+    }
     super.dispose();
+  }
+
+  Widget _buildVideoPlayer() {
+    if (!_isVideoInitialized) {
+      // Show thumbnail with play button if video is not initialized
+      return AspectRatio(
+        aspectRatio: 16 / 9,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            // Thumbnail
+            widget.video.thumbnailUrl.startsWith('http')
+                ? CachedNetworkImage(
+                    imageUrl: widget.video.thumbnailUrl,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                      color: Colors.black,
+                      child: const Center(child: CircularProgressIndicator()),
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      color: Colors.black,
+                      child: const Center(
+                        child: Icon(Icons.error, color: Colors.white54),
+                      ),
+                    ),
+                  )
+                : Container(
+                    color: Colors.black,
+                    child: const Center(
+                      child: Icon(
+                        Icons.videocam_off,
+                        size: 48,
+                        color: Colors.white54,
+                      ),
+                    ),
+                  ),
+            // Play button overlay
+            IconButton(
+              icon: const Icon(
+                Icons.play_circle_fill,
+                size: 72,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Format video tidak didukung')),
+                );
+              },
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Show YouTube player
+    if (_isYoutubeVideo && _youtubeController != null) {
+      return YoutubePlayer(
+        controller: _youtubeController!,
+        showVideoProgressIndicator: true,
+        progressIndicatorColor: Theme.of(context).colorScheme.primary,
+        progressColors: ProgressBarColors(
+          playedColor: Theme.of(context).colorScheme.primary,
+          handleColor: Theme.of(context).colorScheme.primary,
+        ),
+        onReady: () {
+          // Player is ready
+        },
+        onEnded: (metaData) {
+          // Auto-mark as completed when video ends
+          if (!_isCompleted) {
+            setState(() {
+              _isCompleted = true;
+            });
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Video ditandai sebagai selesai'),
+                duration: Duration(seconds: 2),
+              ),
+            );
+          }
+        },
+      );
+    }
+
+    // Show Chewie/VideoPlayer for other video formats
+    if (_isNetworkVideo && _chewieController != null) {
+      return AspectRatio(
+        aspectRatio: 16 / 9,
+        child: Chewie(controller: _chewieController!),
+      );
+    }
+
+    // Fallback - should not reach here
+    return AspectRatio(
+      aspectRatio: 16 / 9,
+      child: Container(
+        color: Colors.black,
+        child: const Center(
+          child: Text(
+            'Format video tidak didukung',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -67,44 +285,10 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Thumbnail with play button overlay
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    // Video thumbnail
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: AspectRatio(
-                        aspectRatio: 16 / 9,
-                        child: Container(
-                          color: Colors.black,
-                          child: const Center(
-                            child: Icon(
-                              Icons.image,
-                              size: 48,
-                              color: Colors.white54,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    // Play button overlay
-                    IconButton(
-                      icon: const Icon(
-                        Icons.play_circle_fill,
-                        size: 72,
-                        color: Colors.white,
-                      ),
-                      onPressed: () {
-                        // In a real app, this would launch the video player
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Fitur video belum tersedia'),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
+                // Video player
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: _buildVideoPlayer(),
                 ),
                 const SizedBox(height: 16),
 
@@ -279,12 +463,33 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(4),
-                  child: Container(
-                    color: Colors.grey.shade200,
-                    child: const Center(
-                      child: Icon(Icons.image, size: 24, color: Colors.grey),
-                    ),
-                  ),
+                  child: video.thumbnailUrl.startsWith('http')
+                      ? CachedNetworkImage(
+                          imageUrl: video.thumbnailUrl,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) =>
+                              Container(color: Colors.grey.shade200),
+                          errorWidget: (context, url, error) => Container(
+                            color: Colors.grey.shade200,
+                            child: const Center(
+                              child: Icon(
+                                Icons.image,
+                                size: 24,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+                        )
+                      : Container(
+                          color: Colors.grey.shade200,
+                          child: const Center(
+                            child: Icon(
+                              Icons.image,
+                              size: 24,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
                 ),
                 const Icon(
                   Icons.play_circle_outline,
