@@ -4,13 +4,60 @@ import '../repositories/repositories.dart';
 import '../widgets/custom_button.dart';
 import 'materi_detail_screen.dart';
 
-class MateriScreen extends StatelessWidget {
+class MateriScreen extends StatefulWidget {
   const MateriScreen({super.key});
 
   @override
+  State<MateriScreen> createState() => _MateriScreenState();
+}
+
+class _MateriScreenState extends State<MateriScreen> {
+  late List<Materi> _allMateris;
+  late List<Materi> _filteredMateris;
+  late List<String> _categories;
+  String _selectedCategory = 'Semua';
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _allMateris = MateriRepository.instance.getAllMateri();
+    _filteredMateris = _allMateris;
+    _categories = _getUniqueCategories(_allMateris);
+    _searchController.addListener(_filterMateris);
+  }
+
+  @override
+  void dispose() {
+    _searchController.removeListener(_filterMateris);
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _filterMateris() {
+    setState(() {
+      final query = _searchController.text.toLowerCase();
+      _filteredMateris = _allMateris.where((materi) {
+        // Apply category filter
+        final matchesCategory =
+            _selectedCategory == 'Semua' ||
+            materi.category == _selectedCategory;
+
+        // Apply search filter
+        final matchesSearch =
+            query.isEmpty ||
+            materi.title.toLowerCase().contains(query) ||
+            materi.description.toLowerCase().contains(query);
+
+        return matchesCategory && matchesSearch;
+      }).toList();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final materis = MateriRepository.instance.getAllMateri();
-    final categories = _getUniqueCategories(materis);
+    // Get categories from all materis to ensure we have the complete list
+    final categories = _categories;
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -34,14 +81,35 @@ class MateriScreen extends StatelessWidget {
             const SizedBox(height: 24),
 
             // Materials list
-            Text(
-              'Semua Materi',
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  _selectedCategory == 'Semua'
+                      ? 'Semua Materi'
+                      : 'Materi $_selectedCategory',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  '${_filteredMateris.length} materi',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade600),
+                ),
+              ],
             ),
             const SizedBox(height: 12),
-            ...materis.map((materi) => _buildMateriCard(context, materi)),
+
+            // Show filtered list or empty state
+            _filteredMateris.isEmpty
+                ? _buildEmptyState(context)
+                : Column(
+                    children: _filteredMateris
+                        .map((materi) => _buildMateriCard(context, materi))
+                        .toList(),
+                  ),
           ],
         ),
       ),
@@ -53,23 +121,68 @@ class MateriScreen extends StatelessWidget {
         .map((materi) => materi.category)
         .toSet()
         .toList();
-    categories.sort();
+    categories.sort((a, b) => a.compareTo(b));
     return categories;
+  }
+
+  Widget _buildEmptyState(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 48.0),
+      alignment: Alignment.center,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.search_off_rounded, size: 80, color: Colors.grey.shade400),
+          const SizedBox(height: 16),
+          Text(
+            'Tidak ada materi ditemukan',
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(color: Colors.grey.shade600),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Coba dengan kata kunci atau kategori lain',
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade500),
+          ),
+          const SizedBox(height: 24),
+          CustomButton(
+            label: 'Reset Filter',
+            onPressed: () {
+              setState(() {
+                _searchController.clear();
+                _selectedCategory = 'Semua';
+                _filteredMateris = _allMateris;
+              });
+            },
+            small: true,
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildSearchBar(BuildContext context) {
     return TextField(
+      controller: _searchController,
       decoration: InputDecoration(
         hintText: 'Cari materi...',
         prefixIcon: const Icon(Icons.search),
+        suffixIcon: _searchController.text.isNotEmpty
+            ? IconButton(
+                icon: const Icon(Icons.clear),
+                onPressed: () {
+                  _searchController.clear();
+                },
+              )
+            : null,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
         filled: true,
         fillColor: Colors.grey.shade100,
         contentPadding: const EdgeInsets.symmetric(vertical: 12),
       ),
-      onChanged: (value) {
-        // TODO: Implement search functionality
-      },
     );
   }
 
@@ -78,9 +191,17 @@ class MateriScreen extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          _buildCategoryChip(context, 'Semua', isSelected: true),
+          _buildCategoryChip(
+            context,
+            'Semua',
+            isSelected: _selectedCategory == 'Semua',
+          ),
           ...categories.map(
-            (category) => _buildCategoryChip(context, category),
+            (category) => _buildCategoryChip(
+              context,
+              category,
+              isSelected: _selectedCategory == category,
+            ),
           ),
         ],
       ),
@@ -98,15 +219,16 @@ class MateriScreen extends StatelessWidget {
         selected: isSelected,
         label: Text(category),
         onSelected: (selected) {
-          // TODO: Implement category filtering
+          setState(() {
+            _selectedCategory = category;
+            _filterMateris();
+          });
         },
         showCheckmark: false,
         backgroundColor: Colors.grey.shade200,
-        selectedColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+        selectedColor: _getCategoryColor(category).withOpacity(0.2),
         labelStyle: TextStyle(
-          color: isSelected
-              ? Theme.of(context).colorScheme.primary
-              : Colors.black,
+          color: isSelected ? _getCategoryColor(category) : Colors.black,
           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
         ),
       ),
