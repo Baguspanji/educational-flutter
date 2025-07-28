@@ -7,6 +7,7 @@ import 'profil_screen.dart';
 import 'artikel_screen.dart';
 import 'video_screen.dart';
 import 'lkpd_screen.dart';
+import 'kuis_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final int initialTab;
@@ -211,7 +212,7 @@ Widget _buildContentTypeCard(
             context,
             MaterialPageRoute(
               builder: (context) =>
-                  const HomeScreen(initialTab: 3), // Video tab
+                  const HomeScreen(initialTab: 2), // Video tab
             ),
             (route) => false,
           );
@@ -220,9 +221,14 @@ Widget _buildContentTypeCard(
             context,
             MaterialPageRoute(
               builder: (context) =>
-                  const HomeScreen(initialTab: 4), // Artikel tab
+                  const HomeScreen(initialTab: 3), // Artikel tab
             ),
             (route) => false,
+          );
+        } else if (type == 'Kuis') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const KuisScreen()),
           );
         }
       },
@@ -339,6 +345,11 @@ Widget _buildLatestContentPreview(BuildContext context, String type) {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const LkpdScreen()),
+              );
+            } else if (type == 'Kuis') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const KuisScreen()),
               );
             } else {
               // For other types, change to the appropriate tab
