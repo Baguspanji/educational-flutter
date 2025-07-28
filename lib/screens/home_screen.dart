@@ -4,21 +4,31 @@ import '../repositories/repositories.dart';
 import '../models/content_models.dart';
 import 'materi_screen.dart';
 import 'profil_screen.dart';
+import 'artikel_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final int initialTab;
+
+  const HomeScreen({super.key, this.initialTab = 0});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _currentIndex = 0;
+  late int _currentIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initialTab;
+  }
+
   final List<Widget> _screens = [
     const HomeContentScreen(),
     const MateriScreen(),
     const _PlaceholderScreen(title: 'Video'),
-    const _PlaceholderScreen(title: 'Artikel'),
+    const ArtikelScreen(),
     const ProfilScreen(),
   ];
 
@@ -179,11 +189,33 @@ Widget _buildContentTypeCard(
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     child: InkWell(
       onTap: () {
-        // Handle navigation to content-specific screen
+        // Use Navigator to reset the app with a specific tab selected
         if (type == 'Materi') {
-          Navigator.push(
+          Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => const MateriScreen()),
+            MaterialPageRoute(
+              builder: (context) =>
+                  const HomeScreen(initialTab: 1), // Materi tab
+            ),
+            (route) => false,
+          );
+        } else if (type == 'Artikel') {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  const HomeScreen(initialTab: 3), // Artikel tab
+            ),
+            (route) => false,
+          );
+        } else if (type == 'Video') {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  const HomeScreen(initialTab: 2), // Video tab
+            ),
+            (route) => false,
           );
         }
       },
@@ -295,38 +327,23 @@ Widget _buildLatestContentPreview(BuildContext context, String type) {
         child: CustomButton(
           label: 'Lihat Semua',
           onPressed: () {
-            // Change to the appropriate tab instead of pushing a new screen
+            // Change to the appropriate tab
+            int targetTab = 0;
             if (type == 'Materi') {
-              // Find the closest HomeScreen ancestor
-              final HomeScreen? homeScreen = context
-                  .findAncestorWidgetOfExactType<HomeScreen>();
-              if (homeScreen != null) {
-                // Change the tab index to Materi (index 1) using the Navigator
-                final navigator = Navigator.of(context);
-                // Find the HomeScreen and update it
-                final scaffoldMessenger = ScaffoldMessenger.of(context);
-
-                // Use this approach to find the parent HomeScreen and update its state
-                final HomeScreen? homeScreen = context
-                    .findAncestorWidgetOfExactType<HomeScreen>();
-                if (homeScreen != null) {
-                  // Use the Navigator to pop back to the HomeScreen and then update it
-                  navigator.pushAndRemoveUntil(
-                    MaterialPageRoute(
-                      builder: (context) => const HomeScreen(),
-                      settings: const RouteSettings(name: 'MateriTab'),
-                    ),
-                    (route) => false,
-                  );
-                } else {
-                  scaffoldMessenger.showSnackBar(
-                    const SnackBar(
-                      content: Text('Cannot navigate to Materi tab'),
-                    ),
-                  );
-                }
-              }
+              targetTab = 1;
+            } else if (type == 'Video') {
+              targetTab = 2;
+            } else if (type == 'Artikel') {
+              targetTab = 3;
             }
+
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomeScreen(initialTab: targetTab),
+              ),
+              (route) => false,
+            );
             // For other types, we'd add similar tab switching logic
           },
           small: true,
