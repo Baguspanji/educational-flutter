@@ -5,6 +5,7 @@ import '../models/content_models.dart';
 import 'materi_screen.dart';
 import 'profil_screen.dart';
 import 'artikel_screen.dart';
+import 'video_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final int initialTab;
@@ -27,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _screens = [
     const HomeContentScreen(),
     const MateriScreen(),
-    const _PlaceholderScreen(title: 'Video'),
+    const VideoScreen(),
     const ArtikelScreen(),
     const ProfilScreen(),
   ];
