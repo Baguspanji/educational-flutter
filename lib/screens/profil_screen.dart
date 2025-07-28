@@ -1,8 +1,62 @@
 import 'package:flutter/material.dart';
-import 'edit_profile_screen.dart';
+import '../repositories/repositories.dart';
+import 'profile_edit_screen.dart';
+import 'help_support_screen.dart';
+
+enum ContentType { materi, kuis, lkpd }
 
 class ProfilScreen extends StatelessWidget {
   const ProfilScreen({super.key});
+
+  // Calculate statistics from repositories
+  int _getCompletedMateriCount() {
+    return MateriRepository.instance.getCompletedMateri().length;
+  }
+
+  int _getCompletedKuisCount() {
+    return KuisRepository.instance.getCompletedKuises().length;
+  }
+
+  int _getCompletedLkpdCount() {
+    return LkpdRepository.instance.getCompletedLkpd().length;
+  }
+
+  Color _getScoreColor(int score) {
+    if (score >= 80) {
+      return Colors.green;
+    } else if (score >= 60) {
+      return Colors.orange;
+    } else {
+      return Colors.red;
+    }
+  }
+
+  double _calculateAverageScore() {
+    final completedKuises = KuisRepository.instance.getCompletedKuises();
+    final completedLkpds = LkpdRepository.instance.getCompletedLkpd();
+
+    int totalScores = 0;
+    int totalItems = 0;
+
+    // Calculate for kuises
+    for (final kuis in completedKuises) {
+      if (kuis.score != null) {
+        totalScores += kuis.score!;
+        totalItems++;
+      }
+    }
+
+    // Calculate for LKPDs
+    for (final lkpd in completedLkpds) {
+      if (lkpd.score != null) {
+        totalScores += lkpd.score!;
+        totalItems++;
+      }
+    }
+
+    if (totalItems == 0) return 0;
+    return totalScores / totalItems;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +108,11 @@ class ProfilScreen extends StatelessWidget {
   }
 
   Widget _buildStatsCard(BuildContext context) {
+    // Calculate real statistics
+    final materiCount = _getCompletedMateriCount();
+    final kuisCount = _getCompletedKuisCount() + _getCompletedLkpdCount();
+    final averageScore = _calculateAverageScore();
+
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -62,11 +121,15 @@ class ProfilScreen extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _buildStatItem(context, '12', 'Materi Selesai'),
+            _buildStatItem(context, '$materiCount', 'Materi Selesai'),
             _buildDivider(),
-            _buildStatItem(context, '8', 'Kuis Selesai'),
+            _buildStatItem(context, '$kuisCount', 'Kuis & LKPD Selesai'),
             _buildDivider(),
-            _buildStatItem(context, '85%', 'Nilai Rata-rata'),
+            _buildStatItem(
+              context,
+              averageScore > 0 ? '${averageScore.toStringAsFixed(0)}%' : '-',
+              'Nilai Rata-rata',
+            ),
           ],
         ),
       ),
@@ -102,7 +165,7 @@ class ProfilScreen extends StatelessWidget {
         'action': () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const EditProfileScreen()),
+            MaterialPageRoute(builder: (context) => const ProfileEditScreen()),
           );
         },
       },
@@ -111,12 +174,7 @@ class ProfilScreen extends StatelessWidget {
         'title': 'Progress Pembelajaran',
         'subtitle': 'Lihat kemajuan belajar anda',
         'action': () {
-          // TODO: Implement learning progress navigation
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Fitur Progress Pembelajaran belum tersedia'),
-            ),
-          );
+          _showProgressDialog(context);
         },
       },
       {
@@ -124,31 +182,28 @@ class ProfilScreen extends StatelessWidget {
         'title': 'Prestasi',
         'subtitle': 'Lihat prestasi yang telah dicapai',
         'action': () {
-          // TODO: Implement achievements navigation
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Fitur Prestasi belum tersedia')),
-          );
+          _showAchievementsDialog(context);
         },
       },
-      {
-        'icon': Icons.settings,
-        'title': 'Pengaturan',
-        'subtitle': 'Atur preferensi aplikasi',
-        'action': () {
-          // TODO: Implement settings navigation
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Fitur Pengaturan belum tersedia')),
-          );
-        },
-      },
+      // {
+      //   'icon': Icons.settings,
+      //   'title': 'Pengaturan',
+      //   'subtitle': 'Atur preferensi aplikasi',
+      //   'action': () {
+      //     // TODO: Implement settings navigation
+      //     ScaffoldMessenger.of(context).showSnackBar(
+      //       const SnackBar(content: Text('Fitur Pengaturan belum tersedia')),
+      //     );
+      //   },
+      // },
       {
         'icon': Icons.help_outline,
         'title': 'Bantuan',
         'subtitle': 'Pusat bantuan dan dukungan',
         'action': () {
-          // TODO: Implement help center navigation
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Fitur Bantuan belum tersedia')),
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const HelpSupportScreen()),
           );
         },
       },
@@ -192,5 +247,315 @@ class ProfilScreen extends StatelessWidget {
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       ),
     );
+  }
+
+  void _showProgressDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Progress Pembelajaran'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildProgressSection(
+                context,
+                'Materi',
+                _getCompletedByCategory(ContentType.materi),
+              ),
+              const Divider(),
+              _buildProgressSection(
+                context,
+                'Kuis',
+                _getCompletedByCategory(ContentType.kuis),
+              ),
+              const Divider(),
+              _buildProgressSection(
+                context,
+                'LKPD',
+                _getCompletedByCategory(ContentType.lkpd),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Tutup'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProgressSection(
+    BuildContext context,
+    String title,
+    Map<String, int> categoryData,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        ...categoryData.entries.map((entry) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 4),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(entry.key),
+                Text(
+                  '${entry.value}',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          );
+        }),
+        if (categoryData.isEmpty) const Text('Belum ada yang diselesaikan'),
+      ],
+    );
+  }
+
+  Map<String, int> _getCompletedByCategory(ContentType type) {
+    Map<String, int> result = {};
+
+    switch (type) {
+      case ContentType.materi:
+        final completed = MateriRepository.instance.getCompletedMateri();
+        for (final materi in completed) {
+          result[materi.category] = (result[materi.category] ?? 0) + 1;
+        }
+        break;
+      case ContentType.kuis:
+        final completed = KuisRepository.instance.getCompletedKuises();
+        for (final kuis in completed) {
+          result[kuis.category] = (result[kuis.category] ?? 0) + 1;
+        }
+        break;
+      case ContentType.lkpd:
+        final completed = LkpdRepository.instance.getCompletedLkpd();
+        for (final lkpd in completed) {
+          result[lkpd.category] = (result[lkpd.category] ?? 0) + 1;
+        }
+        break;
+    }
+
+    return result;
+  }
+
+  void _showAchievementsDialog(BuildContext context) {
+    // Get scores by category
+    final categoryScores = _getScoresByCategory();
+    final highestCategory = _getHighestScoreCategory(categoryScores);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Prestasi'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Nilai Per Kategori',
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 12),
+              ...categoryScores.entries.map((entry) {
+                return _buildScoreBar(
+                  context,
+                  entry.key,
+                  entry.value,
+                  entry.key == highestCategory,
+                );
+              }),
+              if (categoryScores.isEmpty)
+                const Text('Belum ada nilai yang tercatat'),
+
+              const SizedBox(height: 24),
+
+              if (highestCategory.isNotEmpty) ...[
+                Text(
+                  'Pencapaian',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _buildAchievementItem(
+                  context,
+                  'Kategori Terbaik',
+                  highestCategory,
+                  'Kategori dengan nilai rata-rata tertinggi',
+                  Icons.emoji_events,
+                  Colors.amber,
+                ),
+              ],
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Tutup'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildScoreBar(
+    BuildContext context,
+    String category,
+    double score,
+    bool isHighest,
+  ) {
+    final color = _getScoreColor(score.round());
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                category,
+                style: TextStyle(
+                  fontWeight: isHighest ? FontWeight.bold : FontWeight.normal,
+                ),
+              ),
+              Text(
+                '${score.toStringAsFixed(0)}%',
+                style: TextStyle(fontWeight: FontWeight.bold, color: color),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          LinearProgressIndicator(
+            value: score / 100,
+            backgroundColor: Colors.grey.shade200,
+            valueColor: AlwaysStoppedAnimation<Color>(color),
+            minHeight: 8,
+            borderRadius: BorderRadius.circular(4),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAchievementItem(
+    BuildContext context,
+    String title,
+    String value,
+    String description,
+    IconData icon,
+    Color color,
+  ) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          children: [
+            CircleAvatar(
+              backgroundColor: color.withOpacity(0.2),
+              radius: 24,
+              child: Icon(icon, color: color),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  Text(
+                    value,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                  Text(
+                    description,
+                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Map<String, double> _getScoresByCategory() {
+    final Map<String, List<int>> scoresByCategory = {};
+
+    // Get kuis scores by category
+    final completedKuises = KuisRepository.instance.getCompletedKuises();
+    for (final kuis in completedKuises) {
+      if (kuis.score != null) {
+        if (!scoresByCategory.containsKey(kuis.category)) {
+          scoresByCategory[kuis.category] = [];
+        }
+        scoresByCategory[kuis.category]!.add(kuis.score!);
+      }
+    }
+
+    // Get LKPD scores by category
+    final completedLkpds = LkpdRepository.instance.getCompletedLkpd();
+    for (final lkpd in completedLkpds) {
+      if (lkpd.score != null) {
+        if (!scoresByCategory.containsKey(lkpd.category)) {
+          scoresByCategory[lkpd.category] = [];
+        }
+        scoresByCategory[lkpd.category]!.add(lkpd.score!);
+      }
+    }
+
+    // Calculate average score for each category
+    final Map<String, double> result = {};
+    scoresByCategory.forEach((category, scores) {
+      final sum = scores.fold(0, (sum, score) => sum + score);
+      result[category] = sum / scores.length;
+    });
+
+    return result;
+  }
+
+  String _getHighestScoreCategory(Map<String, double> categoryScores) {
+    if (categoryScores.isEmpty) return '';
+
+    String highestCategory = categoryScores.keys.first;
+    double highestScore = categoryScores.values.first;
+
+    categoryScores.forEach((category, score) {
+      if (score > highestScore) {
+        highestCategory = category;
+        highestScore = score;
+      }
+    });
+
+    return highestCategory;
   }
 }

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class EditProfileScreen extends StatefulWidget {
-  const EditProfileScreen({super.key});
+class ProfileEditScreen extends StatefulWidget {
+  const ProfileEditScreen({super.key});
 
   @override
-  State<EditProfileScreen> createState() => _EditProfileScreenState();
+  State<ProfileEditScreen> createState() => _ProfileEditScreenState();
 }
 
-class _EditProfileScreenState extends State<EditProfileScreen> {
+class _ProfileEditScreenState extends State<ProfileEditScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController(text: 'Siswa EduKita');
   final _emailController = TextEditingController(text: 'siswa@example.com');
