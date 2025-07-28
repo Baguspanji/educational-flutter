@@ -6,6 +6,7 @@ import 'materi_screen.dart';
 import 'profil_screen.dart';
 import 'artikel_screen.dart';
 import 'video_screen.dart';
+import 'lkpd_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final int initialTab;
@@ -200,21 +201,26 @@ Widget _buildContentTypeCard(
             ),
             (route) => false,
           );
-        } else if (type == 'Artikel') {
-          Navigator.pushAndRemoveUntil(
+        } else if (type == 'LKPD') {
+          Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  const HomeScreen(initialTab: 3), // Artikel tab
-            ),
-            (route) => false,
+            MaterialPageRoute(builder: (context) => const LkpdScreen()),
           );
         } else if (type == 'Video') {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
               builder: (context) =>
-                  const HomeScreen(initialTab: 2), // Video tab
+                  const HomeScreen(initialTab: 3), // Video tab
+            ),
+            (route) => false,
+          );
+        } else if (type == 'Artikel') {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  const HomeScreen(initialTab: 4), // Artikel tab
             ),
             (route) => false,
           );
@@ -328,23 +334,31 @@ Widget _buildLatestContentPreview(BuildContext context, String type) {
         child: CustomButton(
           label: 'Lihat Semua',
           onPressed: () {
-            // Change to the appropriate tab
-            int targetTab = 0;
-            if (type == 'Materi') {
-              targetTab = 1;
-            } else if (type == 'Video') {
-              targetTab = 2;
-            } else if (type == 'Artikel') {
-              targetTab = 3;
-            }
+            if (type == 'LKPD') {
+              // Use push for LKPD instead of tab switching
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const LkpdScreen()),
+              );
+            } else {
+              // For other types, change to the appropriate tab
+              int targetTab = 0;
+              if (type == 'Materi') {
+                targetTab = 1;
+              } else if (type == 'Video') {
+                targetTab = 2;
+              } else if (type == 'Artikel') {
+                targetTab = 3;
+              }
 
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (context) => HomeScreen(initialTab: targetTab),
-              ),
-              (route) => false,
-            );
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HomeScreen(initialTab: targetTab),
+                ),
+                (route) => false,
+              );
+            }
             // For other types, we'd add similar tab switching logic
           },
           small: true,
@@ -352,54 +366,4 @@ Widget _buildLatestContentPreview(BuildContext context, String type) {
       ),
     ],
   );
-}
-
-// Create a simple placeholder screen for other tabs
-class _PlaceholderScreen extends StatelessWidget {
-  final String title;
-
-  const _PlaceholderScreen({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            _getIconForTitle(),
-            size: 80,
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            '$title Screen',
-            style: Theme.of(
-              context,
-            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Coming Soon',
-            style: Theme.of(
-              context,
-            ).textTheme.bodyLarge?.copyWith(color: Colors.grey.shade600),
-          ),
-        ],
-      ),
-    );
-  }
-
-  IconData _getIconForTitle() {
-    switch (title) {
-      case 'Video':
-        return Icons.play_circle_outline;
-      case 'Artikel':
-        return Icons.article_outlined;
-      case 'Profil':
-        return Icons.person_outline;
-      default:
-        return Icons.question_mark;
-    }
-  }
 }
