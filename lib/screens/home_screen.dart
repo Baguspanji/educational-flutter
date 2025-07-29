@@ -1,4 +1,4 @@
-import 'package:edukita/screens/materi_single_screen.dart';
+import 'package:gastrofun/screens/materi_single_screen.dart';
 import 'package:flutter/material.dart';
 import '../widgets/custom_button.dart';
 import '../repositories/repositories.dart';
@@ -8,6 +8,7 @@ import 'profil_screen.dart';
 import 'artikel_screen.dart';
 import 'video_screen.dart';
 import 'lkpd_screen.dart';
+import 'lkpd_single_screen.dart';
 import 'kuis_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -32,7 +33,8 @@ class _HomeScreenState extends State<HomeScreen> {
     const HomeContentScreen(),
     // const MateriScreen(),
     const MateriSingleScreen(),
-    const VideoScreen(),
+    // const VideoScreen(),
+    const LkpdSingleScreen(),
     const ArtikelScreen(),
     const ProfilScreen(),
   ];
@@ -57,12 +59,19 @@ class _HomeScreenState extends State<HomeScreen> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Beranda'),
           BottomNavigationBarItem(icon: Icon(Icons.book), label: 'Materi'),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.play_circle),
+          //   label: 'Video',
+          // ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.play_circle),
-            label: 'Video',
+            icon: Icon(Icons.edit_document),
+            label: 'LKPD',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.article), label: 'Artikel'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profil'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.question_answer),
+            label: 'Soal',
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.info), label: 'Info'),
         ],
       ),
     );
@@ -71,17 +80,17 @@ class _HomeScreenState extends State<HomeScreen> {
   String _getAppBarTitle() {
     switch (_currentIndex) {
       case 0:
-        return 'EduKita';
+        return 'GastroFun';
       case 1:
         return 'Materi Belajar';
       case 2:
-        return 'Video Pembelajaran';
+        return 'Lembaga Kegiatan Pembelajaran Digital';
       case 3:
-        return 'Artikel Terkait';
+        return 'Soal Evaluasi';
       case 4:
-        return 'Profil';
+        return 'Info Pengembangan';
       default:
-        return 'EduKita';
+        return 'GastroFun';
     }
   }
 }
@@ -179,7 +188,7 @@ class HomeContentScreen extends StatelessWidget {
         children: [
           // Welcome section
           // Text(
-          //   'Selamat Datang di EduKita',
+          //   'Selamat Datang di GastroFun',
           //   style: Theme.of(
           //     context,
           //   ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
@@ -228,11 +237,7 @@ class HomeContentScreen extends StatelessWidget {
             'Capaian Pembelajaran',
             'Setelah mempelajari materi ini, siswa dapat:',
             [
-              'Mampu menjelaskan keterkaitan antara sistem organ tubuh manusia dan cara menjaga kesehatannya dalam kehidupan sehari-hari.',
-              'Mampu mengidentifikasi organ-organ pada sistem pencernaan manusia dan fungsinya.',
-              'Mampu menjelaskan proses pencernaan makanan pada manusia.',
-              'Mampu menganalisis gangguan pada sistem pencernaan manusia dan cara mengatasinya.',
-              'Mampu mengaitkan pola makan sehat dengan kesehatan sistem pencernaan manusia.',
+              'Merefleksikan sistem organ tubuh manusia yang dikaitkan dengan cara menjaga kesehatan tubuhnya.',
             ],
             Icons.stars,
             Theme.of(context).colorScheme.primary,

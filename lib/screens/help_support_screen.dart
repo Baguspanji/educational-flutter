@@ -61,7 +61,7 @@ class HelpSupportScreen extends StatelessWidget {
             _buildContactCard(
               context,
               'Email Dukungan',
-              'support@edukita.com',
+              'support@gastrofun.com',
               Icons.email,
               Colors.blue,
               () {
@@ -110,7 +110,7 @@ class HelpSupportScreen extends StatelessWidget {
             // App version
             Center(
               child: Text(
-                'EduKita App v1.0.0',
+                'GastroFun App v1.0.0',
                 style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
               ),
             ),
@@ -153,7 +153,7 @@ class HelpSupportScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Kami siap membantu Anda dengan pertanyaan seputar aplikasi EduKita.',
+                    'Kami siap membantu Anda dengan pertanyaan seputar aplikasi GastroFun.',
                     style: TextStyle(color: Colors.grey.shade700),
                   ),
                 ],

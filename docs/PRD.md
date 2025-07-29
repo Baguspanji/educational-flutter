@@ -1,6 +1,6 @@
-# EduKita - Educational Learning Platform
+# GastroFun - Digestive System Learning Platform
 
-**Mission Statement**: Memberdayakan pembelajaran mandiri melalui platform edukasi interaktif yang mudah diakses dan engaging untuk semua kalangan.
+**Mission Statement**: Memberdayakan pembelajaran sistem pencernaan manusia melalui platform edukasi interaktif yang mudah diakses dan engaging untuk siswa biologi.
 
 **Experience Qualities**:
 1. **Intuitif** - Interface yang mudah dipahami dan navigasi yang natural untuk semua usia

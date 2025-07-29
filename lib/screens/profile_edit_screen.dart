@@ -9,7 +9,7 @@ class ProfileEditScreen extends StatefulWidget {
 
 class _ProfileEditScreenState extends State<ProfileEditScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController(text: 'Siswa EduKita');
+  final _nameController = TextEditingController(text: 'Siswa GastroFun');
   final _emailController = TextEditingController(text: 'siswa@example.com');
   final _schoolController = TextEditingController(text: 'SMA Negeri 1');
   final _cityController = TextEditingController(text: 'Jakarta');

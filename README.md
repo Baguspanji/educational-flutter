@@ -1,6 +1,6 @@
-# EduKita - Educational Learning App
+# GastroFun - Digestive System Learning App
 
-Aplikasi pembelajaran interaktif yang menyediakan konten pendidikan dalam berbagai format untuk semua kalangan.
+Aplikasi pembelajaran interaktif yang berfokus pada sistem pencernaan manusia untuk pembelajaran biologi.
 
 ## Fitur Utama
 

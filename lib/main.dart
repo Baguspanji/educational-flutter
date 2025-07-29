@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
     );
 
     return MaterialApp(
-      title: 'EduKita',
+      title: 'GastroFun',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,

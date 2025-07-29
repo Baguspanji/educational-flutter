@@ -98,7 +98,7 @@ class _SplashScreenState extends State<SplashScreen>
               FadeTransition(
                 opacity: _animation,
                 child: Text(
-                  'EDUKITA',
+                  'GASTROFUN',
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,

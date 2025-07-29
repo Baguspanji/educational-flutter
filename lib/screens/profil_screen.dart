@@ -82,7 +82,7 @@ class ProfilScreen extends StatelessWidget {
             const SizedBox(height: 16),
             // User Name
             Text(
-              'Siswa EduKita',
+              'Siswa GastroFun',
               style: Theme.of(
                 context,
               ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
