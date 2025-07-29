@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gastrofun/utils/utils.dart';
 import '../models/content_models.dart';
 import '../widgets/custom_button.dart';
@@ -32,6 +33,22 @@ class _LkpdScreenState extends State<LkpdScreen> {
   final TextEditingController _question8Controller = TextEditingController();
   final TextEditingController _question9Controller = TextEditingController();
   final TextEditingController _question10Controller = TextEditingController();
+
+  // Text controllers for organ ordering
+  final TextEditingController _organOrderLambungController =
+      TextEditingController();
+  final TextEditingController _organOrderUsusHalusController =
+      TextEditingController();
+  final TextEditingController _organOrderRonggaMulutController =
+      TextEditingController();
+  final TextEditingController _organOrderRektumController =
+      TextEditingController();
+  final TextEditingController _organOrderKerongkonganController =
+      TextEditingController();
+  final TextEditingController _organOrderUsusBesarController =
+      TextEditingController();
+  final TextEditingController _organOrderAnusController =
+      TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -67,6 +84,15 @@ class _LkpdScreenState extends State<LkpdScreen> {
     _question8Controller.dispose();
     _question9Controller.dispose();
     _question10Controller.dispose();
+
+    // Dispose organ ordering controllers
+    _organOrderLambungController.dispose();
+    _organOrderUsusHalusController.dispose();
+    _organOrderRonggaMulutController.dispose();
+    _organOrderRektumController.dispose();
+    _organOrderKerongkonganController.dispose();
+    _organOrderUsusBesarController.dispose();
+    _organOrderAnusController.dispose();
 
     super.dispose();
   }
@@ -419,21 +445,75 @@ class _LkpdScreenState extends State<LkpdScreen> {
     );
   }
 
+  // Helper method to build a number input for organ ordering
+  Widget _buildNumberInput(
+    TextEditingController controller, {
+    int maxLength = 1,
+  }) {
+    return Container(
+      height: 32,
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: TextField(
+        controller: controller,
+        textAlign: TextAlign.center,
+        keyboardType: TextInputType.number,
+        maxLength: maxLength,
+        style: const TextStyle(fontSize: 14),
+        decoration: const InputDecoration(
+          counterText: '',
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+          hintText: '1-7',
+        ),
+        inputFormatters: [
+          FilteringTextInputFormatter.digitsOnly,
+          FilteringTextInputFormatter.allow(RegExp(r'^[1-7]$')),
+        ],
+      ),
+    );
+  }
+
   TableRow _buildOrganRow(String number, String organName) {
+    // Select the appropriate controller based on organName
+    TextEditingController controller;
+    switch (organName) {
+      case 'Lambung':
+        controller = _organOrderLambungController;
+        break;
+      case 'Usus Halus':
+        controller = _organOrderUsusHalusController;
+        break;
+      case 'Rongga Mulut':
+        controller = _organOrderRonggaMulutController;
+        break;
+      case 'Rektum':
+        controller = _organOrderRektumController;
+        break;
+      case 'Kerongkongan':
+        controller = _organOrderKerongkonganController;
+        break;
+      case 'Usus Besar':
+        controller = _organOrderUsusBesarController;
+        break;
+      case 'Anus':
+        controller = _organOrderAnusController;
+        break;
+      default:
+        controller = TextEditingController();
+        break;
+    }
+
     return TableRow(
       children: [
         _buildTableCell(number),
         _buildTableCell(organName),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Container(
-            height: 32,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade50,
-              borderRadius: BorderRadius.circular(4),
-              border: Border.all(color: Colors.grey.shade300),
-            ),
-          ),
+          child: _buildNumberInput(controller),
         ),
       ],
     );
