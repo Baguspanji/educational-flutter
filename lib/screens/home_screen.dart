@@ -88,29 +88,172 @@ class _HomeScreenState extends State<HomeScreen> {
 class HomeContentScreen extends StatelessWidget {
   const HomeContentScreen({super.key});
 
+  // Helper method to build the section cards
+  Widget _buildSectionCard(
+    BuildContext context,
+    String title,
+    String subtitle,
+    List<String> items,
+    IconData icon,
+    Color color,
+  ) {
+    return Card(
+      elevation: 3,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                CircleAvatar(
+                  backgroundColor: color.withOpacity(0.2),
+                  child: Icon(icon, color: color),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: color,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text(subtitle, style: Theme.of(context).textTheme.bodyMedium),
+            const SizedBox(height: 8),
+            ...items.asMap().entries.map((entry) {
+              final index = entry.key;
+              final item = entry.value;
+
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    title == 'Tujuan Pembelajaran'
+                        ? Container(
+                            margin: const EdgeInsets.only(top: 2),
+                            child: Text(
+                              '${index + 1}. ',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: color,
+                              ),
+                            ),
+                          )
+                        : Icon(
+                            Icons.check_circle_outline,
+                            color: color,
+                            size: 18,
+                          ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        item,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodyMedium?.copyWith(height: 1.5),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // Welcome section
-          Text(
-            'Selamat Datang di EduKita',
-            style: Theme.of(
-              context,
-            ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
+          // Text(
+          //   'Selamat Datang di EduKita',
+          //   style: Theme.of(
+          //     context,
+          //   ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
+          // ),
+          // const SizedBox(height: 8),
+          // Text(
+          //   'Platform belajar interaktif untuk semua kalangan',
+          //   style: Theme.of(context).textTheme.bodyLarge,
+          // ),
+          // const SizedBox(height: 24),
+          // Logo section
+          Center(
+            child: Image.asset(
+              'assets/images/logo-unnes-horizontal.png',
+              width: 200,
+              height: 48,
+              fit: BoxFit.fitWidth,
+            ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 16),
           Text(
-            'Platform belajar interaktif untuk semua kalangan',
+            'Sistem Pencernaan',
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Materi tentang sistem pencernaan manusia',
             style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          const SizedBox(height: 16),
+
+          // Content Image Overview
+          Image.asset(
+            'assets/images/sistem-pencernaan.png',
+            width: MediaQuery.of(context).size.width - 100,
+            fit: BoxFit.fitHeight,
+          ),
+          const SizedBox(height: 24),
+
+          // Capaian Pembelajaran Section
+          _buildSectionCard(
+            context,
+            'Capaian Pembelajaran',
+            'Setelah mempelajari materi ini, siswa dapat:',
+            [
+              'Memahami struktur dan fungsi sistem pencernaan manusia',
+              'Mengidentifikasi organ-organ utama sistem pencernaan',
+              'Menjelaskan proses pencernaan makanan dalam tubuh manusia',
+              'Menganalisis hubungan antara struktur dan fungsi organ pencernaan',
+            ],
+            Icons.stars,
+            Theme.of(context).colorScheme.primary,
+          ),
+          const SizedBox(height: 20),
+
+          // Tujuan Pembelajaran Section
+          _buildSectionCard(
+            context,
+            'Tujuan Pembelajaran',
+            'Pembelajaran ini bertujuan untuk:',
+            [
+              'Mengenalkan organ-organ pada sistem pencernaan manusia',
+              'Menjelaskan mekanisme pencernaan mekanik dan kimiawi',
+              'Memahami penyerapan nutrisi dalam tubuh',
+              'Mengenali gangguan umum pada sistem pencernaan dan pencegahannya',
+            ],
+            Icons.assignment_turned_in,
+            Theme.of(context).colorScheme.secondary,
           ),
           const SizedBox(height: 24),
 
           // Content Overview Cards
-          _buildContentOverview(context),
+          // _buildContentOverview(context),
         ],
       ),
     );
