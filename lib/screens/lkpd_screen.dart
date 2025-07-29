@@ -49,6 +49,22 @@ class _LkpdScreenState extends State<LkpdScreen> {
       TextEditingController();
   final TextEditingController _organOrderAnusController =
       TextEditingController();
+
+  // Text controllers for organ functions
+  final TextEditingController _organFunctionRonggaMulutController =
+      TextEditingController();
+  final TextEditingController _organFunctionKerongkonganController =
+      TextEditingController();
+  final TextEditingController _organFunctionLambungController =
+      TextEditingController();
+  final TextEditingController _organFunctionUsusHalusController =
+      TextEditingController();
+  final TextEditingController _organFunctionUsusBesarController =
+      TextEditingController();
+  final TextEditingController _organFunctionRektumController =
+      TextEditingController();
+  final TextEditingController _organFunctionAnusController =
+      TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -93,6 +109,15 @@ class _LkpdScreenState extends State<LkpdScreen> {
     _organOrderKerongkonganController.dispose();
     _organOrderUsusBesarController.dispose();
     _organOrderAnusController.dispose();
+
+    // Dispose organ function controllers
+    _organFunctionRonggaMulutController.dispose();
+    _organFunctionKerongkonganController.dispose();
+    _organFunctionLambungController.dispose();
+    _organFunctionUsusHalusController.dispose();
+    _organFunctionUsusBesarController.dispose();
+    _organFunctionRektumController.dispose();
+    _organFunctionAnusController.dispose();
 
     super.dispose();
   }
@@ -519,20 +544,64 @@ class _LkpdScreenState extends State<LkpdScreen> {
     );
   }
 
+  // Helper method to build function input text field
+  Widget _buildFunctionInput(TextEditingController controller) {
+    return Container(
+      height: 40,
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: TextField(
+        controller: controller,
+        style: const TextStyle(fontSize: 14),
+        maxLines: 2,
+        decoration: const InputDecoration(
+          hintText: 'Ketik fungsi organ di sini...',
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        ),
+      ),
+    );
+  }
+
   TableRow _buildFunctionRow(String organName) {
+    // Select the appropriate controller based on organName
+    TextEditingController controller;
+    switch (organName) {
+      case 'Rongga Mulut':
+        controller = _organFunctionRonggaMulutController;
+        break;
+      case 'Kerongkongan':
+        controller = _organFunctionKerongkonganController;
+        break;
+      case 'Lambung':
+        controller = _organFunctionLambungController;
+        break;
+      case 'Usus Halus':
+        controller = _organFunctionUsusHalusController;
+        break;
+      case 'Usus Besar':
+        controller = _organFunctionUsusBesarController;
+        break;
+      case 'Rektum':
+        controller = _organFunctionRektumController;
+        break;
+      case 'Anus':
+        controller = _organFunctionAnusController;
+        break;
+      default:
+        controller = TextEditingController();
+        break;
+    }
+
     return TableRow(
       children: [
         _buildTableCell(organName),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Container(
-            height: 40,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade50,
-              borderRadius: BorderRadius.circular(4),
-              border: Border.all(color: Colors.grey.shade300),
-            ),
-          ),
+          child: _buildFunctionInput(controller),
         ),
       ],
     );
