@@ -82,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case 1:
         return 'Materi Belajar';
       case 2:
-        return 'Lembaga Kegiatan Pembelajaran Digital';
+        return 'Lembar Kerja Peserta Didik';
       case 3:
         return 'Soal Evaluasi';
       case 4:
