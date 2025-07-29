@@ -11,7 +11,7 @@ plugins {
 android {
     namespace = "com.baguspanji.gastrofun"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "27.0.12077973" // Fixed NDK version to match plugin requirements
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

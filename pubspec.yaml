@@ -65,7 +65,7 @@ dependencies:
 
   # Image and file picking
   image_picker: ^1.0.4
-  file_picker: ^5.3.3
+  file_picker: ^10.2.0
 
 dev_dependencies:
   flutter_test:
