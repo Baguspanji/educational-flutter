@@ -93,19 +93,19 @@ class _KuisSingleScreenState extends State<KuisSingleScreen> {
                   children: [
                     // Header info
                     _buildHeader(context),
+                    const SizedBox(height: 16),
+
+                    // Instructions and objectives
+                    _buildInstructionsCard(),
                     const SizedBox(height: 24),
 
                     // Kuis Content Card
                     _buildKuisContentCard(),
                     const SizedBox(height: 24),
 
-                    // Instructions
-                    _buildInstructionsCard(),
-                    const SizedBox(height: 24),
-
                     // Sample Questions
                     _buildSampleQuestionsCard(),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 24),
                   ],
                 ),
               ),
@@ -276,88 +276,54 @@ class _KuisSingleScreenState extends State<KuisSingleScreen> {
   }
 
   Widget _buildInstructionsCard() {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.info_outline,
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.info_outline,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'Petunjuk & Tujuan',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
                   color: Theme.of(context).colorScheme.secondary,
                 ),
-                const SizedBox(width: 8),
-                Text(
-                  'Petunjuk Pengerjaan',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-
-            const Text(
-              '1. Kuis ini terdiri dari soal pilihan ganda dan esai.',
-              style: TextStyle(height: 1.5),
-            ),
-            const Text(
-              '2. Setiap soal memiliki bobot nilai yang sama.',
-              style: TextStyle(height: 1.5),
-            ),
-            const Text(
-              '3. Kerjakan soal dalam waktu yang telah ditentukan.',
-              style: TextStyle(height: 1.5),
-            ),
-            const Text(
-              '4. Pastikan koneksi internet Anda stabil selama mengerjakan kuis.',
-              style: TextStyle(height: 1.5),
-            ),
-            const Text(
-              '5. Anda tidak dapat kembali ke soal sebelumnya setelah menjawab.',
-              style: TextStyle(height: 1.5),
-            ),
-            const Text(
-              '6. Nilai akan muncul setelah semua soal dikerjakan.',
-              style: TextStyle(height: 1.5),
-            ),
-            const SizedBox(height: 16),
-
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.orange.shade50,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.orange.shade200),
               ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(
-                    Icons.warning_amber_rounded,
-                    color: Colors.orange.shade800,
-                    size: 20,
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      'Pastikan Anda sudah mempelajari materi Sistem Pencernaan sebelum mengerjakan kuis ini.',
-                      style: TextStyle(
-                        color: Colors.orange.shade800,
-                        height: 1.5,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          const Text(
+            '1. Kuis ini terdiri dari soal pilihan ganda dan esai.',
+            style: TextStyle(height: 1.5),
+          ),
+          const Text(
+            '2. Setiap soal memiliki bobot nilai yang sama.',
+            style: TextStyle(height: 1.5),
+          ),
+          const Text(
+            '3. Kerjakan soal dalam waktu yang telah ditentukan.',
+            style: TextStyle(height: 1.5),
+          ),
+          const Text(
+            '4. Pastikan koneksi internet Anda stabil selama mengerjakan kuis.',
+            style: TextStyle(height: 1.5),
+          ),
+          const Text(
+            '5. Anda tidak dapat kembali ke soal sebelumnya setelah menjawab.',
+            style: TextStyle(height: 1.5),
+          ),
+          const Text(
+            '6. Nilai akan muncul setelah semua soal dikerjakan.',
+            style: TextStyle(height: 1.5),
+          ),
+        ],
       ),
     );
   }
@@ -389,7 +355,7 @@ class _KuisSingleScreenState extends State<KuisSingleScreen> {
             ),
             const SizedBox(height: 16),
 
-            // Show the first 3 questions as samples
+            // Show the first 3 questions as samples with updated styling
             ...kuis!.questions.take(3).map((question) {
               final index = kuis!.questions.indexOf(question);
               return Padding(
@@ -397,44 +363,78 @@ class _KuisSingleScreenState extends State<KuisSingleScreen> {
                 child: Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
+                    color: Colors.grey.shade50,
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(color: Colors.grey.shade300),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Soal ${index + 1}:',
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(question, style: const TextStyle(height: 1.5)),
-                      const SizedBox(height: 16),
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade200,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.grey.shade400),
-                        ),
-                        child: const Row(
-                          children: [
-                            Icon(Icons.lock, size: 18, color: Colors.grey),
-                            SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                'Jawaban akan tersedia setelah Anda mengerjakan kuis',
-                                style: TextStyle(
-                                  fontStyle: FontStyle.italic,
-                                  color: Colors.grey,
-                                ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.primary.withOpacity(0.1),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Text(
+                              '${index + 1}',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).colorScheme.primary,
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  question,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    height: 1.5,
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                                Container(
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.shade200,
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                      color: Colors.grey.shade400,
+                                    ),
+                                  ),
+                                  child: const Row(
+                                    children: [
+                                      Icon(
+                                        Icons.lock,
+                                        size: 18,
+                                        color: Colors.grey,
+                                      ),
+                                      SizedBox(width: 8),
+                                      Expanded(
+                                        child: Text(
+                                          'Jawaban akan tersedia setelah Anda mengerjakan kuis',
+                                          style: TextStyle(
+                                            fontStyle: FontStyle.italic,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -443,11 +443,21 @@ class _KuisSingleScreenState extends State<KuisSingleScreen> {
             }).toList(),
 
             Center(
-              child: Text(
-                'Dan ${kuis!.questions.length - 3} soal lainnya...',
-                style: TextStyle(
-                  color: Colors.grey.shade600,
-                  fontStyle: FontStyle.italic,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  'Dan ${kuis!.questions.length - 3} soal lainnya...',
+                  style: TextStyle(
+                    color: Colors.grey.shade600,
+                    fontStyle: FontStyle.italic,
+                  ),
                 ),
               ),
             ),
@@ -507,20 +517,6 @@ class _KuisSingleScreenState extends State<KuisSingleScreen> {
       ),
       child: Row(
         children: [
-          Expanded(
-            child: CustomButton(
-              label: 'Bagikan',
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Membagikan Kuis...')),
-                );
-              },
-              backgroundColor: Colors.white,
-              textColor: Theme.of(context).colorScheme.secondary,
-              borderRadius: 8,
-            ),
-          ),
-          const SizedBox(width: 16),
           Expanded(
             child: CustomButton(
               label: kuis!.isCompleted ? 'Kerjakan Lagi' : 'Mulai Kuis',

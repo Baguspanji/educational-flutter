@@ -324,7 +324,7 @@ class _LkpdSingleScreenState extends State<LkpdSingleScreen> {
             const SizedBox(width: 16),
             _buildMetadataItem(
               context,
-              Icons.help_outline,
+              Icons.timer,
               '${lkpd!.questionCount} soal',
             ),
             const SizedBox(width: 16),
@@ -1161,20 +1161,20 @@ class _LkpdSingleScreenState extends State<LkpdSingleScreen> {
       ),
       child: Row(
         children: [
-          Expanded(
-            child: CustomButton(
-              label: 'Bagikan',
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Membagikan LKPD...')),
-                );
-              },
-              backgroundColor: Colors.white,
-              textColor: Theme.of(context).colorScheme.secondary,
-              borderRadius: 8,
-            ),
-          ),
-          const SizedBox(width: 16),
+          // Expanded(
+          //   child: CustomButton(
+          //     label: 'Bagikan',
+          //     onPressed: () {
+          //       ScaffoldMessenger.of(context).showSnackBar(
+          //         const SnackBar(content: Text('Membagikan LKPD...')),
+          //       );
+          //     },
+          //     backgroundColor: Colors.white,
+          //     textColor: Theme.of(context).colorScheme.secondary,
+          //     borderRadius: 8,
+          //   ),
+          // ),
+          // const SizedBox(width: 16),
           Expanded(
             child: CustomButton(
               label: lkpd!.isCompleted ? 'Kerjakan Lagi' : 'Kerjakan',
