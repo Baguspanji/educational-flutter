@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gastrofun/utils/utils.dart';
 import '../models/content_models.dart';
 import '../widgets/custom_button.dart';
 
@@ -248,7 +249,7 @@ class _LkpdSingleScreenState extends State<LkpdSingleScreen> {
             _buildMetadataItem(
               context,
               Icons.calendar_today,
-              _formatDate(lkpd!.createdAt),
+              Utils.formatDate(lkpd!.createdAt),
             ),
           ],
         ),
@@ -441,7 +442,7 @@ class _LkpdSingleScreenState extends State<LkpdSingleScreen> {
             const Divider(),
             _buildInfoRow('Waktu', '${lkpd!.estimatedTimeMinutes} menit'),
             const Divider(),
-            _buildInfoRow('Tanggal Dibuat', _formatDate(lkpd!.createdAt)),
+            _buildInfoRow('Tanggal Dibuat', Utils.formatDate(lkpd!.createdAt)),
             const SizedBox(height: 16),
             if (lkpd!.isCompleted && lkpd!.score != null)
               Row(
@@ -1109,24 +1110,6 @@ class _LkpdSingleScreenState extends State<LkpdSingleScreen> {
         ],
       ),
     );
-  }
-
-  String _formatDate(DateTime date) {
-    final months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'Mei',
-      'Jun',
-      'Jul',
-      'Ags',
-      'Sep',
-      'Okt',
-      'Nov',
-      'Des',
-    ];
-    return '${date.day} ${months[date.month - 1]} ${date.year}';
   }
 
   Color _getCategoryColor(String category) {

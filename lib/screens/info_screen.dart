@@ -24,12 +24,12 @@ class InfoScreen extends StatelessWidget {
           const SizedBox(height: 24),
 
           // References Section
-          _buildReferencesSection(context),
-          const SizedBox(height: 24),
+          // _buildReferencesSection(context),
+          // const SizedBox(height: 24),
 
           // Help and Support Card
-          _buildHelpSupportCard(context),
-          const SizedBox(height: 32),
+          // _buildHelpSupportCard(context),
+          // const SizedBox(height: 32),
 
           // Copyright and Credits
           _buildFooter(context),
@@ -175,14 +175,10 @@ class InfoScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                   child: Container(
                     width: 80,
-                    height: 80,
-                    color: Colors.grey.shade300,
-                    child: Center(
-                      child: Icon(
-                        Icons.person,
-                        size: 40,
-                        color: Colors.grey.shade600,
-                      ),
+                    height: 100,
+                    child: Image.asset(
+                      'assets/images/lisa-profile.jpeg',
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),
@@ -192,13 +188,13 @@ class InfoScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Bagus Panji Prasetyo',
+                        'Lisa Meidya, S. Pd.',
                         style: Theme.of(context).textTheme.titleMedium
                             ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'Mahasiswa Program Magister Pendidikan IPA',
+                        'Mahasiswa Program Magister Pendidikan Dasar',
                         style: TextStyle(color: Colors.grey.shade700),
                       ),
                       const SizedBox(height: 4),
@@ -225,13 +221,13 @@ class InfoScreen extends StatelessWidget {
             const SizedBox(height: 8),
             _buildAdvisorInfo(
               context,
-              'Prof. Dr. Sudarmin, M.Si.',
+              'Prof. Dr. Sri Haryani, M.Si.',
               'Pembimbing I',
             ),
             const SizedBox(height: 12),
             _buildAdvisorInfo(
               context,
-              'Dr. Siti Alimah, M.Pd.',
+              'Prof. Dr. Nanik Wijayati, M.Si.',
               'Pembimbing II',
             ),
           ],
@@ -262,135 +258,6 @@ class InfoScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildReferencesSection(BuildContext context) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.book_outlined,
-                  color: Theme.of(context).colorScheme.tertiary,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  'Referensi',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.tertiary,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-
-            // List of references
-            _buildReferenceItem(
-              context,
-              'Campbell, N.A., et al. (2020)',
-              'Biology: A Global Approach. 12th Edition. Pearson Education.',
-            ),
-            const Divider(height: 24),
-            _buildReferenceItem(
-              context,
-              'Marieb, E.N. & Hoehn, K. (2019)',
-              'Human Anatomy & Physiology. 11th Edition. Pearson Education.',
-            ),
-            const Divider(height: 24),
-            _buildReferenceItem(
-              context,
-              'Guyton, A.C. & Hall, J.E. (2021)',
-              'Textbook of Medical Physiology. 14th Edition. Elsevier.',
-            ),
-            const Divider(height: 24),
-            _buildReferenceItem(
-              context,
-              'Tortora, G.J. & Derrickson, B. (2018)',
-              'Principles of Anatomy and Physiology. 15th Edition. Wiley.',
-            ),
-            const Divider(height: 24),
-            _buildReferenceItem(
-              context,
-              'Kemendikbud (2020)',
-              'Kurikulum Darurat pada Satuan Pendidikan dalam Kondisi Khusus.',
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildReferenceItem(
-    BuildContext context,
-    String author,
-    String title,
-  ) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(author, style: const TextStyle(fontWeight: FontWeight.bold)),
-        const SizedBox(height: 4),
-        Text(title, style: TextStyle(color: Colors.grey.shade700, height: 1.3)),
-      ],
-    );
-  }
-
-  Widget _buildHelpSupportCard(BuildContext context) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const HelpSupportScreen()),
-          );
-        },
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              CircleAvatar(
-                backgroundColor: Theme.of(
-                  context,
-                ).colorScheme.secondary.withOpacity(0.1),
-                radius: 24,
-                child: Icon(
-                  Icons.support_agent,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Bantuan & Dukungan',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const Text(
-                      'Punya pertanyaan atau masalah? Kami siap membantu',
-                    ),
-                  ],
-                ),
-              ),
-              Icon(Icons.chevron_right, color: Colors.grey.shade600),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildFooter(BuildContext context) {
     return Center(
       child: Column(
@@ -412,9 +279,8 @@ class InfoScreen extends StatelessWidget {
             style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 4),
           Text(
-            'Program Magister Pendidikan IPA Universitas Negeri Semarang',
+            'Program Magister Pendidikan Dasar Universitas Negeri Semarang',
             style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
             textAlign: TextAlign.center,
           ),

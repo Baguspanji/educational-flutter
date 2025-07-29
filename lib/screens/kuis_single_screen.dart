@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gastrofun/utils/utils.dart';
 import '../models/content_models.dart';
 import '../widgets/custom_button.dart';
 
@@ -216,7 +217,7 @@ class _KuisSingleScreenState extends State<KuisSingleScreen> {
             _buildMetadataItem(
               context,
               Icons.calendar_today,
-              _formatDate(kuis!.createdAt),
+              Utils.formatDate(kuis!.createdAt),
             ),
           ],
         ),
@@ -1061,23 +1062,5 @@ class _KuisSingleScreenState extends State<KuisSingleScreen> {
       default:
         return Colors.grey.shade700;
     }
-  }
-
-  String _formatDate(DateTime date) {
-    final months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'Mei',
-      'Jun',
-      'Jul',
-      'Ags',
-      'Sep',
-      'Okt',
-      'Nov',
-      'Des',
-    ];
-    return '${date.day} ${months[date.month - 1]} ${date.year}';
   }
 }

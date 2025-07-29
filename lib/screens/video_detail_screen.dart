@@ -4,7 +4,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 import '../models/content_models.dart';
-import '../repositories/repositories.dart';
 import '../widgets/custom_button.dart';
 
 class VideoDetailScreen extends StatefulWidget {
@@ -395,16 +394,6 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
-
-                // Related videos section
-                Text(
-                  'Video Terkait',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                _buildRelatedVideos(),
               ],
             ),
           ),
@@ -430,96 +419,6 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
             ),
         ],
       ),
-    );
-  }
-
-  Widget _buildRelatedVideos() {
-    // Get related videos based on category
-    final relatedVideos = VideoRepository.instance
-        .getVideosByCategory(widget.video.category)
-        .where((v) => v.id != widget.video.id)
-        .toList();
-
-    if (relatedVideos.isEmpty) {
-      return const Padding(
-        padding: EdgeInsets.symmetric(vertical: 16.0),
-        child: Center(child: Text('Tidak ada video terkait')),
-      );
-    }
-
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: relatedVideos.length > 3 ? 3 : relatedVideos.length,
-      itemBuilder: (context, index) {
-        final video = relatedVideos[index];
-        return ListTile(
-          contentPadding: EdgeInsets.zero,
-          leading: SizedBox(
-            width: 100,
-            height: 56,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
-                  child: video.thumbnailUrl.startsWith('http')
-                      ? CachedNetworkImage(
-                          imageUrl: video.thumbnailUrl,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) =>
-                              Container(color: Colors.grey.shade200),
-                          errorWidget: (context, url, error) => Container(
-                            color: Colors.grey.shade200,
-                            child: const Center(
-                              child: Icon(
-                                Icons.image,
-                                size: 24,
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ),
-                        )
-                      : Container(
-                          color: Colors.grey.shade200,
-                          child: const Center(
-                            child: Icon(
-                              Icons.image,
-                              size: 24,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ),
-                ),
-                const Icon(
-                  Icons.play_circle_outline,
-                  size: 24,
-                  color: Colors.white,
-                ),
-              ],
-            ),
-          ),
-          title: Text(
-            video.title,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          subtitle: Text(
-            '${video.durationInMinutes} menit',
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          trailing: const Icon(Icons.chevron_right),
-          onTap: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => VideoDetailScreen(video: video),
-              ),
-            );
-          },
-        );
-      },
     );
   }
 }

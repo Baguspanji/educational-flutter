@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gastrofun/utils/utils.dart';
 import '../models/content_models.dart';
 import '../models/chapter_content_model.dart';
 import '../data/digestive_system_content.dart';
@@ -145,12 +146,6 @@ class _MateriSingleScreenState extends State<MateriSingleScreen> {
         // Metadata row
         Row(
           children: [
-            // _buildMetadataItem(
-            //   context,
-            //   Icons.signal_cellular_alt,
-            //   materi!.difficultyLevel,
-            // ),
-            // const SizedBox(width: 16),
             _buildMetadataItem(
               context,
               Icons.library_books,
@@ -160,7 +155,7 @@ class _MateriSingleScreenState extends State<MateriSingleScreen> {
             _buildMetadataItem(
               context,
               Icons.calendar_today,
-              _formatDate(materi!.createdAt),
+              Utils.formatDate(materi!.createdAt),
             ),
           ],
         ),
@@ -708,23 +703,5 @@ class _MateriSingleScreenState extends State<MateriSingleScreen> {
       default:
         return Colors.grey.shade700;
     }
-  }
-
-  String _formatDate(DateTime date) {
-    final months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'Mei',
-      'Jun',
-      'Jul',
-      'Ags',
-      'Sep',
-      'Okt',
-      'Nov',
-      'Des',
-    ];
-    return '${date.day} ${months[date.month - 1]} ${date.year}';
   }
 }
