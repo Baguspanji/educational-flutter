@@ -2,20 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:gastrofun/utils/utils.dart';
 import '../models/content_models.dart';
 import '../widgets/custom_button.dart';
+import '../widgets/lkpd/video_section.dart';
+import '../widgets/lkpd/article_section.dart';
 
-class LkpdSingleScreen extends StatefulWidget {
-  const LkpdSingleScreen({super.key});
+class LkpdScreen extends StatefulWidget {
+  const LkpdScreen({super.key});
 
   @override
-  State<LkpdSingleScreen> createState() => _LkpdSingleScreenState();
+  State<LkpdScreen> createState() => _LkpdScreenState();
 }
 
-class _LkpdSingleScreenState extends State<LkpdSingleScreen> {
+class _LkpdScreenState extends State<LkpdScreen> {
   late LKPD? lkpd;
   bool isLoading = true;
   final ScrollController _scrollController = ScrollController();
   bool _showBackToTop = false;
 
+  // Text controllers for name and group inputs
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _groupController = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -38,6 +43,8 @@ class _LkpdSingleScreenState extends State<LkpdSingleScreen> {
   @override
   void dispose() {
     _scrollController.dispose();
+    _nameController.dispose();
+    _groupController.dispose();
     super.dispose();
   }
 
@@ -95,6 +102,10 @@ class _LkpdSingleScreenState extends State<LkpdSingleScreen> {
 
                     // Instructions and objectives
                     _buildInstructionsCard(),
+                    const SizedBox(height: 24),
+
+                    // Student information inputs
+                    _buildStudentInfoInputs(),
                     const SizedBox(height: 24),
 
                     // Section "Orientasi Masalah (Kasus Nyata)"
@@ -202,24 +213,6 @@ class _LkpdSingleScreenState extends State<LkpdSingleScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Category badge
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(
-            color: _getCategoryColor(lkpd!.category).withOpacity(0.2),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: Text(
-            lkpd!.category,
-            style: TextStyle(
-              color: _getCategoryColor(lkpd!.category),
-              fontWeight: FontWeight.bold,
-              fontSize: 12,
-            ),
-          ),
-        ),
-        const SizedBox(height: 12),
-
         // Title and description
         Text(
           lkpd!.title,
@@ -795,272 +788,23 @@ class _LkpdSingleScreenState extends State<LkpdSingleScreen> {
   }
 
   Widget _buildArticleSection() {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.article,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  'Artikel Referensi',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-
-            // Article content
-            GestureDetector(
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('Baca Artikel'),
-                    content: const Text('Pilih cara membaca artikel'),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          // Open browser
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Membuka browser...')),
-                          );
-                        },
-                        child: const Text('Browser'),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          // Open in-app article reader
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'Membuka artikel dalam aplikasi...',
-                              ),
-                            ),
-                          );
-                        },
-                        child: const Text('Dalam Aplikasi'),
-                      ),
-                    ],
-                  ),
-                );
-              },
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.grey.shade300),
-                  color: Colors.grey.shade50,
-                ),
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.primary.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Icon(
-                            Icons.menu_book_rounded,
-                            color: Theme.of(context).colorScheme.primary,
-                            size: 24,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Keracunan Makan Bergizi Gratis di PALI, 173 Siswa Terkena',
-                                style: Theme.of(context).textTheme.titleMedium
-                                    ?.copyWith(fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Kompas.id',
-                                style: TextStyle(
-                                  color: Colors.grey.shade600,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 6,
-                        horizontal: 10,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade200,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        'Studi Kasus',
-                        style: TextStyle(
-                          color: Colors.grey.shade700,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              'Baca artikel ini untuk memahami kasus keracunan makanan yang terjadi karena tempe dan air terkontaminasi bakteri.',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ],
-        ),
-      ),
+    return ArticleSection(
+      title: 'Keracunan Makan Bergizi Gratis di PALI, 173 Siswa Terkena',
+      source: 'Kompas.id',
+      description:
+          'Baca artikel ini untuk memahami kasus keracunan makanan yang terjadi karena tempe dan air terkontaminasi bakteri.',
+      articleUrl:
+          'https://www.kompas.id/artikel/jadikan-pelajaran-keracunan-mbg-di-pali-karena-tempe-dan-air-terkontaminasi-bakteri',
     );
   }
 
   Widget _buildVideoSection() {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.video_library,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  'Video Referensi',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-
-            // Video content
-            GestureDetector(
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('Tonton Video'),
-                    content: const Text('Pilih cara menonton video'),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          // Open YouTube app
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Membuka YouTube...')),
-                          );
-                        },
-                        child: const Text('YouTube'),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          // Open in-app video player
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Memutar video dalam aplikasi...'),
-                            ),
-                          );
-                        },
-                        child: const Text('Dalam Aplikasi'),
-                      ),
-                    ],
-                  ),
-                );
-              },
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  // Video thumbnail with YouTube preview
-                  Container(
-                    height: 200,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      image: const DecorationImage(
-                        image: NetworkImage(
-                          'https://img.youtube.com/vi/vHRWgpjzpPo/0.jpg',
-                        ),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  // Play button overlay
-                  Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.3),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: const Icon(
-                      Icons.play_arrow,
-                      color: Colors.white,
-                      size: 40,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              'Belasan Siswa Keracunan Makanan di Bogor',
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Video ini menjelaskan kasus keracunan makanan yang terjadi di Bogor, yang relevan dengan materi sistem pencernaan manusia.',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ],
-        ),
-      ),
+    return VideoSection(
+      title: 'Belasan Siswa Keracunan Makanan di Bogor',
+      description:
+          'Video ini menjelaskan kasus keracunan makanan yang terjadi di Bogor, yang relevan dengan materi sistem pencernaan manusia.',
+      thumbnailUrl: 'https://img.youtube.com/vi/vHRWgpjzpPo/0.jpg',
+      videoUrl: 'https://www.youtube.com/watch?v=vHRWgpjzpPo',
     );
   }
 
@@ -1110,25 +854,6 @@ class _LkpdSingleScreenState extends State<LkpdSingleScreen> {
         ],
       ),
     );
-  }
-
-  Color _getCategoryColor(String category) {
-    switch (category) {
-      case 'Matematika':
-        return Colors.blue.shade700;
-      case 'Fisika':
-        return Colors.purple.shade700;
-      case 'Bahasa':
-        return Colors.green.shade700;
-      case 'Sosial':
-        return Colors.orange.shade700;
-      case 'Kimia':
-        return Colors.red.shade700;
-      case 'Biologi':
-        return Colors.teal.shade700;
-      default:
-        return Colors.grey.shade700;
-    }
   }
 
   // Section header method
@@ -1340,6 +1065,86 @@ class _LkpdSingleScreenState extends State<LkpdSingleScreen> {
                     color: Colors.grey,
                     fontStyle: FontStyle.italic,
                   ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Method to build student info inputs (Nama and Kelompok)
+  Widget _buildStudentInfoInputs() {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.person,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Identitas Siswa',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+
+            // Nama input field
+            Text(
+              'Nama',
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _nameController,
+              decoration: InputDecoration(
+                hintText: 'Masukkan nama lengkap',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(color: Colors.grey.shade300),
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 12,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Kelompok input field (optional)
+            Text(
+              'Kelompok (Opsional)',
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _groupController,
+              decoration: InputDecoration(
+                hintText: 'Masukkan nama kelompok jika ada',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(color: Colors.grey.shade300),
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 12,
                 ),
               ),
             ),

@@ -1,6 +1,6 @@
 import 'package:gastrofun/screens/materi_screen.dart';
 import 'package:flutter/material.dart';
-import 'lkpd_single_screen.dart';
+import 'lkpd_screen.dart';
 import 'kuis_single_screen.dart';
 import 'info_screen.dart';
 
@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _screens = [
     const HomeContentScreen(),
     const MateriScreen(),
-    const LkpdSingleScreen(),
+    const LkpdScreen(),
     const KuisSingleScreen(),
     const InfoScreen(),
   ];
