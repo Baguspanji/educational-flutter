@@ -5,6 +5,8 @@ import '../models/content_models.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/lkpd/video_section.dart';
 import '../widgets/lkpd/article_section.dart';
+import '../services/sheets_service.dart';
+import '../services/storage_service.dart';
 
 class LkpdScreen extends StatefulWidget {
   const LkpdScreen({super.key});
@@ -65,6 +67,11 @@ class _LkpdScreenState extends State<LkpdScreen> {
       TextEditingController();
   final TextEditingController _organFunctionAnusController =
       TextEditingController();
+
+  // Variable untuk menyimpan URL infografis yang diupload
+  String? _infografisUrl;
+  bool _isSubmitting = false;
+
   @override
   void initState() {
     super.initState();
@@ -779,50 +786,238 @@ class _LkpdScreenState extends State<LkpdScreen> {
     );
   }
 
-  Widget _buildBottomNav(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            offset: const Offset(0, -4),
-            blurRadius: 8,
+  // Method untuk upload infografis
+  Future<void> _uploadInfografis() async {
+    final storageService = StorageService();
+    final url = await storageService.uploadInfografis(context);
+
+    if (url != null) {
+      setState(() {
+        _infografisUrl = url;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Infografis berhasil diunggah!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    }
+  }
+
+  // Method untuk submit LKPD
+  Future<void> _submitLkpd() async {
+    // Validasi input
+    if (_nameController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Nama tidak boleh kosong'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _isSubmitting = true;
+    });
+
+    try {
+      // Kumpulkan data jawaban
+      final answers = {
+        'question1': _question1Controller.text,
+        'question2': _question2Controller.text,
+        'question3': _question3Controller.text,
+        'question4': _question4Controller.text,
+        'question5': _question5Controller.text,
+        'question6': _question6Controller.text,
+        'question8': _question8Controller.text,
+        'question9': _question9Controller.text,
+        'question10': _question10Controller.text,
+      };
+
+      // Kumpulkan data urutan organ
+      final organOrders = {
+        'ronggaMulut': _organOrderRonggaMulutController.text,
+        'kerongkongan': _organOrderKerongkonganController.text,
+        'lambung': _organOrderLambungController.text,
+        'ususHalus': _organOrderUsusHalusController.text,
+        'ususBesar': _organOrderUsusBesarController.text,
+        'rektum': _organOrderRektumController.text,
+        'anus': _organOrderAnusController.text,
+      };
+
+      // Kumpulkan data fungsi organ
+      final organFunctions = {
+        'ronggaMulut': _organFunctionRonggaMulutController.text,
+        'kerongkongan': _organFunctionKerongkonganController.text,
+        'lambung': _organFunctionLambungController.text,
+        'ususHalus': _organFunctionUsusHalusController.text,
+        'ususBesar': _organFunctionUsusBesarController.text,
+        'rektum': _organFunctionRektumController.text,
+        'anus': _organFunctionAnusController.text,
+      };
+
+      // Kirim data ke spreadsheet
+      final success = await SheetsService.submitLkpd(
+        name: _nameController.text.trim(),
+        group: _groupController.text.trim(),
+        answers: answers,
+        organOrders: organOrders,
+        organFunctions: organFunctions,
+        infografisUrl: _infografisUrl,
+      );
+
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('LKPD berhasil dikirim!'),
+            backgroundColor: Colors.green,
           ),
-        ],
-      ),
-      child: Row(
-        children: [
-          // Expanded(
-          //   child: CustomButton(
-          //     label: 'Bagikan',
-          //     onPressed: () {
-          //       ScaffoldMessenger.of(context).showSnackBar(
-          //         const SnackBar(content: Text('Membagikan LKPD...')),
-          //       );
-          //     },
-          //     backgroundColor: Colors.white,
-          //     textColor: Theme.of(context).colorScheme.secondary,
-          //     borderRadius: 8,
-          //   ),
-          // ),
-          // const SizedBox(width: 16),
-          Expanded(
-            child: CustomButton(
-              label: lkpd!.isCompleted ? 'Kerjakan Lagi' : 'Kerjakan',
-              onPressed: () {
-                // Navigate to LKPD kerjakan screen
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Mengerjakan LKPD...')),
-                );
-              },
-              backgroundColor: Theme.of(context).colorScheme.secondary,
-              textColor: Colors.white,
-              borderRadius: 8,
+        );
+
+        // Optional: Reset form atau navigate ke halaman lain
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Gagal mengirim LKPD. Silakan coba lagi.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      print('Error submitting LKPD: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Terjadi kesalahan. Silakan coba lagi.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        _isSubmitting = false;
+      });
+    }
+  }
+
+  Widget _buildProdukSection() {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.brush, color: Theme.of(context).colorScheme.primary),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Membuat Produk (Infografis)',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
+            const SizedBox(height: 16),
+
+            // Question 7
+            Text(
+              '7. Rancang infografis digital yang tidak hanya menunjukkan urutan organ pencernaan, tetapi juga menunjukkan risiko gangguan akibat gaya hidup buruk. Sertakan data dan ajakan.',
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.apps, color: Colors.blue.shade700),
+                  const SizedBox(width: 8),
+                  const Text(
+                    'Gunakan aplikasi: Canva',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            InkWell(
+              onTap: _uploadInfografis,
+              child: Container(
+                width: double.infinity,
+                height: 120,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: _infografisUrl != null
+                      ? Colors.green.shade50
+                      : Colors.grey.shade50,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: _infografisUrl != null
+                        ? Colors.green.shade300
+                        : Colors.grey.shade300,
+                  ),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      _infografisUrl != null
+                          ? Icons.check_circle
+                          : Icons.upload_file,
+                      size: 32,
+                      color: _infografisUrl != null
+                          ? Colors.green
+                          : Theme.of(
+                              context,
+                            ).colorScheme.primary.withOpacity(0.5),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      _infografisUrl != null
+                          ? 'Infografis berhasil diunggah'
+                          : 'Unggah infografis Anda di sini',
+                      style: TextStyle(
+                        color: _infografisUrl != null
+                            ? Colors.green
+                            : Theme.of(
+                                context,
+                              ).colorScheme.primary.withOpacity(0.7),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      _infografisUrl != null
+                          ? 'Klik untuk mengganti'
+                          : 'Format: JPG, PNG atau PDF (maks. 5MB)',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -915,108 +1110,35 @@ class _LkpdScreenState extends State<LkpdScreen> {
     );
   }
 
-  // Now let's create the _buildProdukSection method for Step 4
-  Widget _buildProdukSection() {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.brush, color: Theme.of(context).colorScheme.primary),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    'Membuat Produk (Infografis)',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
+  Widget _buildBottomNav(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            offset: const Offset(0, -4),
+            blurRadius: 8,
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: CustomButton(
+              label: _isSubmitting ? 'Mengirim...' : 'Kirim LKPD',
+              onPressed: _isSubmitting ? () {} : _submitLkpd,
+              backgroundColor: Theme.of(context).colorScheme.secondary,
+              textColor: Colors.white,
+              borderRadius: 8,
             ),
-            const SizedBox(height: 16),
-
-            // Question 7
-            Text(
-              '7. Rancang infografis digital yang tidak hanya menunjukkan urutan organ pencernaan, tetapi juga menunjukkan risiko gangguan akibat gaya hidup buruk. Sertakan data dan ajakan.',
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade300),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.apps, color: Colors.blue.shade700),
-                  const SizedBox(width: 8),
-                  const Text(
-                    'Gunakan aplikasi: Canva',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 12),
-            Container(
-              width: double.infinity,
-              height: 120,
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade50,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade300),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.upload_file,
-                    size: 32,
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.primary.withOpacity(0.5),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Unggah infografis Anda di sini',
-                    style: TextStyle(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.primary.withOpacity(0.7),
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Format: JPG, PNG atau PDF (maks. 5MB)',
-                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-  // Method to build student info inputs (Nama and Kelompok)
   Widget _buildStudentInfoInputs() {
     return Card(
       elevation: 2,

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "553237522175",
+    "project_id": "gastrofun-de393",
+    "storage_bucket": "gastrofun-de393.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:553237522175:android:5d01a61cd184d3a7eb4eca",
+        "android_client_info": {
+          "package_name": "com.baguspanji.gastrofun"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2wAq7UKNugGx2S7cL9_wvdCAwm_vozQY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

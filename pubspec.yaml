@@ -56,6 +56,17 @@ dependencies:
   # For in-app web browsing
   flutter_inappwebview: ^6.0.0
 
+  # For Google Sheets integration
+  gsheets: ^0.5.0
+
+  # Firebase dependencies
+  firebase_core: ^2.15.1
+  firebase_storage: ^11.2.6
+
+  # Image and file picking
+  image_picker: ^1.0.4
+  file_picker: ^5.3.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
