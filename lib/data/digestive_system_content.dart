@@ -1,4 +1,4 @@
-import 'package:edukita/models/chapter_content_model.dart';
+import 'package:gastrofun/models/chapter_content_model.dart';
 
 class DigestiveSystemContent {
   static List<ChapterContent> chapters = [

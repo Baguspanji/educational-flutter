@@ -38,6 +38,7 @@ class LKPD extends Content {
   final int estimatedTimeMinutes;
   final int? score; // null if not taken yet
   final DateTime? completedAt;
+  final List<String> objectives;
 
   LKPD({
     required super.id,
@@ -51,6 +52,7 @@ class LKPD extends Content {
     required this.estimatedTimeMinutes,
     this.score,
     this.completedAt,
+    this.objectives = const [],
   });
 }
 
