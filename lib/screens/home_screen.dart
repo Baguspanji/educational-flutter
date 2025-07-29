@@ -1,3 +1,4 @@
+import 'package:edukita/screens/materi_single_screen.dart';
 import 'package:flutter/material.dart';
 import '../widgets/custom_button.dart';
 import '../repositories/repositories.dart';
@@ -29,7 +30,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Widget> _screens = [
     const HomeContentScreen(),
-    const MateriScreen(),
+    // const MateriScreen(),
+    const MateriSingleScreen(),
     const VideoScreen(),
     const ArtikelScreen(),
     const ProfilScreen(),
@@ -226,10 +228,11 @@ class HomeContentScreen extends StatelessWidget {
             'Capaian Pembelajaran',
             'Setelah mempelajari materi ini, siswa dapat:',
             [
-              'Memahami struktur dan fungsi sistem pencernaan manusia',
-              'Mengidentifikasi organ-organ utama sistem pencernaan',
-              'Menjelaskan proses pencernaan makanan dalam tubuh manusia',
-              'Menganalisis hubungan antara struktur dan fungsi organ pencernaan',
+              'Mampu menjelaskan keterkaitan antara sistem organ tubuh manusia dan cara menjaga kesehatannya dalam kehidupan sehari-hari.',
+              'Mampu mengidentifikasi organ-organ pada sistem pencernaan manusia dan fungsinya.',
+              'Mampu menjelaskan proses pencernaan makanan pada manusia.',
+              'Mampu menganalisis gangguan pada sistem pencernaan manusia dan cara mengatasinya.',
+              'Mampu mengaitkan pola makan sehat dengan kesehatan sistem pencernaan manusia.',
             ],
             Icons.stars,
             Theme.of(context).colorScheme.primary,
@@ -242,10 +245,12 @@ class HomeContentScreen extends StatelessWidget {
             'Tujuan Pembelajaran',
             'Pembelajaran ini bertujuan untuk:',
             [
-              'Mengenalkan organ-organ pada sistem pencernaan manusia',
-              'Menjelaskan mekanisme pencernaan mekanik dan kimiawi',
-              'Memahami penyerapan nutrisi dalam tubuh',
-              'Mengenali gangguan umum pada sistem pencernaan dan pencegahannya',
+              'Mengurutkan organ dan proses sistem pencernaan.',
+              'Menjelaskan fungsi organ sistem pencernaan.',
+              'Menganalisis proses pencernaan.',
+              'Menyelesaikan masalah gangguan pencernaan.',
+              'Mengaitkan gaya hidup dengan kesehatan pencernaan.',
+              'Membuat diagram/infografis digital tentang proses pencernaan.',
             ],
             Icons.assignment_turned_in,
             Theme.of(context).colorScheme.secondary,
