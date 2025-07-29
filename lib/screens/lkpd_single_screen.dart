@@ -181,13 +181,70 @@ class _LkpdSingleScreenState extends State<LkpdSingleScreen> {
                     ),
                     const SizedBox(height: 16),
 
-                    // LKPD Content Card
-                    _buildLkpdContentCard(),
+                    // Investigasi Mandiri / Kelompok Content
+                    _buildInvestigasiSection(),
                     const SizedBox(height: 24),
 
-                    // Questions Preview
-                    _buildQuestionsPreview(),
-                    const SizedBox(height: 40),
+                    // Section "Orientasi Masalah (Kasus Nyata)"
+                    Container(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: Colors.grey.shade300,
+                            width: 2,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        'Langkah 4 – Membuat Produk (Infografis)',
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.primary,
+                              letterSpacing: 0.2,
+                            ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    _buildProdukSection(),
+                    const SizedBox(height: 24),
+
+                    // Section "Orientasi Masalah (Kasus Nyata)"
+                    Container(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: Colors.grey.shade300,
+                            width: 2,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        'Langkah 5 – Refleksi',
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.primary,
+                              letterSpacing: 0.2,
+                            ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Refleksi Content
+                    _buildRefleksiSection(),
+                    const SizedBox(height: 24),
+
+                    // // LKPD Content Card
+                    // _buildLkpdContentCard(),
+                    // const SizedBox(height: 24),
+
+                    // // Questions Preview
+                    // _buildQuestionsPreview(),
+                    // const SizedBox(height: 40),
                   ],
                 ),
               ),
@@ -1172,5 +1229,316 @@ class _LkpdSingleScreenState extends State<LkpdSingleScreen> {
       default:
         return Colors.grey.shade700;
     }
+  }
+
+  // Let's create the _buildInvestigasiSection method for Step 3
+  Widget _buildInvestigasiSection() {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.search,
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Investigasi Mandiri / Kelompok',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+
+            // Question 4
+            Text(
+              '4. Tentukan dan jelaskan bagian sistem pencernaan yang pertama terganggu saat seseorang mengalami keracunan makanan. Jelaskan alasanmu menggunakan informasi digital.',
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: const Text(
+                '...........................................................................................................................',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Question 5
+            Text(
+              '5. Pilih salah satu jenis bakteri dari kasus (misal: E. coli). Jelaskan bagaimana bakteri itu masuk ke tubuh, bagaimana pengaruhnya terhadap sistem pencernaan, dan bagaimana tubuh merespon.',
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: const Text(
+                '...........................................................................................................................',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Question 6
+            Text(
+              '6. Bagaimana kebiasaan digital sehari-hari, seperti membeli makanan online atau jajan sambil main gadget, dapat berpengaruh pada kesehatan sistem pencernaan?',
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: const Text(
+                '...........................................................................................................................',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Now let's create the _buildProdukSection method for Step 4
+  Widget _buildProdukSection() {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.brush, color: Theme.of(context).colorScheme.primary),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Membuat Produk (Infografis)',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+
+            // Question 7
+            Text(
+              '7. Rancang infografis digital yang tidak hanya menunjukkan urutan organ pencernaan, tetapi juga menunjukkan risiko gangguan akibat gaya hidup buruk. Sertakan data dan ajakan.',
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.apps, color: Colors.blue.shade700),
+                  const SizedBox(width: 8),
+                  const Text(
+                    'Gunakan aplikasi: Canva',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            Container(
+              width: double.infinity,
+              height: 120,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey.shade300),
+                // borderStyle: BorderStyle.solid,
+              ),
+              child: const Center(
+                child: Text(
+                  'Unggah infografis Anda di sini',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Finally, let's create the _buildRefleksiSection method for Step 5
+  Widget _buildRefleksiSection() {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.psychology_alt,
+                  color: Theme.of(context).colorScheme.tertiary,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Refleksi',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.tertiary,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+
+            // Question 8
+            Text(
+              '8. Apa pelajaran paling penting yang kamu dapat dari mempelajari dua kasus ini dan kaitannya dengan sistem pencernaan?',
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: const Text(
+                '...........................................................................................................................',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Question 9
+            Text(
+              '9. Bagaimana seharusnya kamu bersikap saat menerima informasi kesehatan dari internet? Berikan satu contoh nyata.',
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: const Text(
+                '...........................................................................................................................',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Question 10
+            Text(
+              '10. Jika kamu ditugaskan untuk membuat sekolah lebih sehat, apa tiga langkah nyata yang akan kamu usulkan agar kasus seperti ini tidak terjadi di sekolahmu?',
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: const Text(
+                '...........................................................................................................................',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
