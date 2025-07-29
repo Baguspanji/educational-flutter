@@ -1,29 +1,25 @@
+import 'dart:convert';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:gsheets/gsheets.dart';
 
 class SheetsService {
-  static const _credentials = r'''
-  {
-    "installed": {
-      "client_id": "749317269358-kecnmhp9h3le3ib02el7o88ouqrtrvcm.apps.googleusercontent.com",
-      "project_id": "gastrofun",
-      "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-      "token_uri": "https://oauth2.googleapis.com/token",
-      "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs"
-    }
-  }
-  ''';
-
   // ID spreadsheet Anda (dari URL)
-  static const _spreadsheetId = 'YOUR_SPREADSHEET_ID';
+  static const _spreadsheetId = '1i_blKgJrrm6sPPireicB5O4n2dZ3m9H1ft__dwhAfds';
 
   // Inisialisasi gsheets
-  static final _gsheets = GSheets(_credentials);
+  static GSheets? _gsheets;
   static Worksheet? _worksheetLkpd;
 
   // Inisialisasi
   static Future<bool> init() async {
     try {
-      final ss = await _gsheets.spreadsheet(_spreadsheetId);
+      // Load credentials from JSON file
+      final String credentialsJson = await rootBundle.loadString(
+        'assets/config/sheets_credentials.json',
+      );
+      _gsheets = GSheets(credentialsJson);
+
+      final ss = await _gsheets!.spreadsheet(_spreadsheetId);
       _worksheetLkpd = await _getWorksheet(ss, 'LKPD Submissions');
 
       // Buat header jika belum ada
