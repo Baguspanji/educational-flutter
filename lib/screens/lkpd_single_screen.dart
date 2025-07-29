@@ -97,25 +97,9 @@ class _LkpdSingleScreenState extends State<LkpdSingleScreen> {
                     const SizedBox(height: 24),
 
                     // Section "Orientasi Masalah (Kasus Nyata)"
-                    Container(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            color: Colors.grey.shade300,
-                            width: 2,
-                          ),
-                        ),
-                      ),
-                      child: Text(
-                        'Langkah 1 – Orientasi Masalah (Kasus Nyata)',
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.primary,
-                              letterSpacing: 0.2,
-                            ),
-                      ),
+                    _buildSectionHeader(
+                      'Langkah 1 – Orientasi Masalah (Kasus Nyata)',
+                      context,
                     ),
                     const SizedBox(height: 16),
 
@@ -132,25 +116,9 @@ class _LkpdSingleScreenState extends State<LkpdSingleScreen> {
                     const SizedBox(height: 24),
 
                     // Section "Orientasi Masalah (Kasus Nyata)"
-                    Container(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            color: Colors.grey.shade300,
-                            width: 2,
-                          ),
-                        ),
-                      ),
-                      child: Text(
-                        'Langkah 2 – Mengorganisasi Informasi',
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.primary,
-                              letterSpacing: 0.2,
-                            ),
-                      ),
+                    _buildSectionHeader(
+                      'Langkah 2 – Mengorganisasi Informasi',
+                      context,
                     ),
                     const SizedBox(height: 16),
 
@@ -159,25 +127,9 @@ class _LkpdSingleScreenState extends State<LkpdSingleScreen> {
                     const SizedBox(height: 24),
 
                     // Section "Orientasi Masalah (Kasus Nyata)"
-                    Container(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            color: Colors.grey.shade300,
-                            width: 2,
-                          ),
-                        ),
-                      ),
-                      child: Text(
-                        'Langkah 3 – Investigasi Mandiri / Kelompok',
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.primary,
-                              letterSpacing: 0.2,
-                            ),
-                      ),
+                    _buildSectionHeader(
+                      'Langkah 3 – Investigasi Mandiri / Kelompok',
+                      context,
                     ),
                     const SizedBox(height: 16),
 
@@ -186,25 +138,9 @@ class _LkpdSingleScreenState extends State<LkpdSingleScreen> {
                     const SizedBox(height: 24),
 
                     // Section "Orientasi Masalah (Kasus Nyata)"
-                    Container(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            color: Colors.grey.shade300,
-                            width: 2,
-                          ),
-                        ),
-                      ),
-                      child: Text(
-                        'Langkah 4 – Membuat Produk (Infografis)',
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.primary,
-                              letterSpacing: 0.2,
-                            ),
-                      ),
+                    _buildSectionHeader(
+                      'Langkah 4 – Membuat Produk (Infografis)',
+                      context,
                     ),
                     const SizedBox(height: 16),
 
@@ -212,26 +148,7 @@ class _LkpdSingleScreenState extends State<LkpdSingleScreen> {
                     const SizedBox(height: 24),
 
                     // Section "Orientasi Masalah (Kasus Nyata)"
-                    Container(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            color: Colors.grey.shade300,
-                            width: 2,
-                          ),
-                        ),
-                      ),
-                      child: Text(
-                        'Langkah 5 – Refleksi',
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.primary,
-                              letterSpacing: 0.2,
-                            ),
-                      ),
-                    ),
+                    _buildSectionHeader('Langkah 5 – Refleksi', context),
                     const SizedBox(height: 16),
 
                     // Refleksi Content
@@ -1229,6 +1146,26 @@ class _LkpdSingleScreenState extends State<LkpdSingleScreen> {
       default:
         return Colors.grey.shade700;
     }
+  }
+
+  // Section header method
+  Widget _buildSectionHeader(String title, BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: Colors.grey.shade300, width: 2),
+        ),
+      ),
+      child: Text(
+        title,
+        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          fontWeight: FontWeight.bold,
+          color: Theme.of(context).colorScheme.primary,
+          letterSpacing: 0.2,
+        ),
+      ),
+    );
   }
 
   // Let's create the _buildInvestigasiSection method for Step 3
