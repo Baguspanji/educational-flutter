@@ -4,21 +4,13 @@ class DigestiveSystemContent {
   static List<ChapterContent> chapters = [
     // Bab 1
     ChapterContent(
-      title: 'Pengantar Sistem Pencernaan - "Mesin" Pengolah Energi Tubuh',
+      title: 'Cover Materi - Sistem Pencernaan',
       sections: [
         ContentSection(
           blocks: [
             ContentBlock(
-              text:
-                  'Setiap hari, tubuh kita membutuhkan "bahan bakar" untuk dapat beraktivitas, berpikir, dan bertumbuh. Bahan bakar ini berasal dari makanan yang kita konsumsi. Namun, tubuh tidak bisa langsung menggunakan nasi, daging, atau sayuran begitu saja. Makanan tersebut perlu dipecah menjadi molekul-molekul kecil yang disebut zat gizi agar dapat diserap dan digunakan oleh sel-sel di seluruh tubuh.',
-            ),
-            ContentBlock(
-              text:
-                  'Proses kompleks inilah yang dijalankan oleh sistem pencernaan. Anggaplah sistem pencernaan sebagai sebuah "pabrik" biokimia canggih. Sistem ini adalah serangkaian organ yang bekerja secara terkoordinasi untuk mengubah makanan menjadi energi dan nutrisi, serta membuang sisa-sisa yang tidak lagi diperlukan. Perjalanan makanan ini dimulai dari mulut dan akan berakhir di anus, melewati serangkaian proses yang luar biasa di sepanjang jalan.',
-            ),
-            ContentBlock(
-              text:
-                  'Dalam bab-bab selanjutnya, kita akan "membongkar" setiap bagian dari sistem ini untuk memahami bagaimana setiap komponen bekerja secara sinergis.',
+              text: 'assets/images/materi-1.jpg',
+              type: BlockType.image,
             ),
           ],
         ),
@@ -27,56 +19,21 @@ class DigestiveSystemContent {
 
     // Bab 2
     ChapterContent(
-      title: 'Dua Proses Utama Pencernaan - Mekanik vs. Kimiawi',
+      title: 'Apa itu Sistem Pencernaan?',
       sections: [
         ContentSection(
           blocks: [
             ContentBlock(
               text:
-                  'Untuk mengubah makanan menjadi zat gizi, tubuh kita menggunakan dua metode utama yang bekerja secara bersamaan.',
+                  'Setiap hari kita makan agar tubuh kita kuat, sehat, dan bisa tumbuh. Namun, makanan tidak langsung bisa digunakan oleh tubuh. Makanan harus diproses terlebih dahulu agar zat gizinya dapat diserap oleh darah dan diedarkan ke seluruh tubuh. Proses inilah yang disebut pencernaan makanan.',
             ),
-          ],
-        ),
-        ContentSection(
-          subtitle: '2.1 Pencernaan Mekanik: Penghancuran Fisik',
-          blocks: [
             ContentBlock(
-              text:
-                  'Pencernaan mekanik adalah proses pemecahan makanan dari ukuran besar menjadi potongan-potongan yang lebih kecil secara fisik. Proses ini tidak mengubah susunan kimia makanan, tetapi sangat penting untuk memperluas area permukaan makanan, sehingga enzim nantinya dapat bekerja lebih efisien.',
+              text: 'assets/images/materi-2.jpg',
+              type: BlockType.image,
             ),
             ContentBlock(
               text:
-                  'Di Mulut: Proses ini dimulai saat gigi mengunyah makanan. Gigi seri memotong, gigi taring merobek, dan gigi geraham menggiling makanan hingga menjadi partikel kecil.',
-              type: BlockType.bulletPoint,
-            ),
-            ContentBlock(
-              text:
-                  'Di Lambung: Dinding lambung yang berotot akan bergerak meremas dan mengaduk makanan, mencampurnya dengan getah lambung hingga menjadi seperti bubur kental yang disebut kimus.',
-              type: BlockType.bulletPoint,
-            ),
-          ],
-        ),
-        ContentSection(
-          subtitle: '2.2 Pencernaan Kimiawi: Pemecahan Molekuler dengan Enzim',
-          blocks: [
-            ContentBlock(
-              text:
-                  'Pencernaan kimiawi adalah proses penguraian molekul kompleks dalam makanan (karbohidrat, protein, lemak) menjadi molekul yang lebih sederhana dengan bantuan zat kimia khusus yang disebut enzim. Enzim berfungsi sebagai katalisator biologis yang mempercepat reaksi kimia tanpa ikut bereaksi.',
-            ),
-            ContentBlock(text: 'Proses ini terjadi di beberapa lokasi utama:'),
-            ContentBlock(
-              text:
-                  'Mulut: Enzim amilase dalam air liur mulai memecah karbohidrat.',
-              type: BlockType.bulletPoint,
-            ),
-            ContentBlock(
-              text: 'Lambung: Enzim pepsin mulai memecah protein.',
-              type: BlockType.bulletPoint,
-            ),
-            ContentBlock(
-              text:
-                  'Usus Halus: Ini adalah arena utama pencernaan kimiawi, di mana berbagai macam enzim dari pankreas dan dinding usus halus bekerja untuk menyelesaikan pemecahan karbohidrat, protein, dan lemak.',
-              type: BlockType.bulletPoint,
+                  'Sistem pencernaan adalah rangkaian organ tubuh yang bertugas untuk mengolah makanan menjadi zat gizi dan membuang sisa yang tidak dibutuhkan. Organ-organ ini bekerja sama, mulai dari saat makanan masuk ke mulut hingga sisa makanan dikeluarkan melalui anus (Kemdikbudristek, 2022).',
             ),
           ],
         ),
@@ -85,142 +42,32 @@ class DigestiveSystemContent {
 
     // Bab 3
     ChapterContent(
-      title: 'Organ-Organ Utama Sistem Pencernaan - Tur di Sepanjang Saluran',
+      title: 'Jenis-Jenis Pencernaan',
       sections: [
         ContentSection(
           blocks: [
             ContentBlock(
-              text:
-                  'Mari kita telusuri perjalanan makanan dari awal hingga akhir dan mengenal setiap organ yang terlibat.',
+              text: 'Dalam tubuh kita, terdapat dua jenis pencernaan:',
             ),
           ],
         ),
         ContentSection(
-          subtitle: '3.1 Pintu Gerbang: Mulut',
+          subtitle: '1. Pencernaan Mekanik',
           blocks: [
             ContentBlock(
               text:
-                  'Mulut adalah titik awal dari semua proses pencernaan. Di sini terjadi:',
-            ),
-            ContentBlock(
-              text:
-                  'Pencernaan Mekanik: Oleh gigi yang mengunyah makanan. Manusia memiliki berbagai jenis gigi dengan fungsi spesifik: gigi seri untuk memotong, taring untuk merobek, serta premolar dan molar untuk menggiling.',
-              type: BlockType.bulletPoint,
-            ),
-            ContentBlock(
-              text:
-                  'Pencernaan Kimiawi: Kelenjar ludah memproduksi air liur yang mengandung enzim amilase (ptialin), yang memulai pemecahan pati (karbohidrat) menjadi gula yang lebih sederhana.',
-              type: BlockType.bulletPoint,
-            ),
-            ContentBlock(
-              text:
-                  'Lidah: Berperan dalam mengaduk makanan, mencampurnya dengan air liur, dan mendorongnya ke belakang untuk proses menelan.',
+                  'Ini adalah proses menghancurkan makanan secara fisik. Contohnya adalah saat kita mengunyah makanan dengan gigi, atau saat lambung mengaduk makanan.',
               type: BlockType.bulletPoint,
             ),
           ],
         ),
         ContentSection(
-          subtitle: '3.2 Saluran Penghubung: Kerongkongan (Esofagus)',
+          subtitle: '2. Pencernaan Kimiawi',
           blocks: [
             ContentBlock(
               text:
-                  'Setelah ditelan, makanan tidak jatuh begitu saja ke lambung. Makanan didorong melalui kerongkongan, sebuah tabung berotot, oleh gerakan ritmis yang disebut gerakan peristaltik. Gerakan ini seperti gelombang kontraksi otot yang memastikan makanan bergerak ke arah yang benar, yaitu menuju lambung.',
-            ),
-          ],
-        ),
-        ContentSection(
-          subtitle: '3.3 "Mixer" Asam: Lambung',
-          blocks: [
-            ContentBlock(
-              text:
-                  'Lambung adalah organ berotot berbentuk seperti kantong di mana makanan akan ditampung dan diproses selama beberapa jam. Di dalam lambung terjadi:',
-            ),
-            ContentBlock(
-              text: 'Pencernaan Mekanik: Otot lambung mengaduk-aduk makanan.',
+                  'Ini adalah proses menguraikan makanan dengan bantuan enzim. Enzim adalah zat yang mempercepat reaksi kimia di tubuh. Pencernaan kimiawi terjadi di mulut, lambung, dan usus halus (Suparno, 2020).',
               type: BlockType.bulletPoint,
-            ),
-            ContentBlock(
-              text:
-                  'Pencernaan Kimiawi: Dinding lambung mengeluarkan getah lambung yang berisi:',
-              type: BlockType.bulletPoint,
-            ),
-            ContentBlock(
-              text:
-                  'Asam Klorida (HCl): Menciptakan suasana yang sangat asam (pH 1.5-3.5) untuk membunuh sebagian besar kuman dan bakteri yang masuk bersama makanan, serta mengaktifkan enzim pepsin.',
-              type: BlockType.bulletPoint,
-            ),
-            ContentBlock(
-              text:
-                  'Enzim Pepsin: Berfungsi memecah protein menjadi molekul yang lebih kecil yang disebut pepton.',
-              type: BlockType.bulletPoint,
-            ),
-          ],
-        ),
-        ContentSection(
-          subtitle: '3.4 Pusat Penyerapan: Usus Halus',
-          blocks: [
-            ContentBlock(
-              text:
-                  'Dari lambung, makanan yang sudah berbentuk bubur (kimus) masuk ke usus halus, organ terpanjang dalam sistem pencernaan. Di sinilah sebagian besar pencernaan kimiawi dan penyerapan nutrisi terjadi. Proses ini dibantu oleh tiga organ tambahan:',
-            ),
-            ContentBlock(
-              text:
-                  'Hati: Menghasilkan cairan empedu yang disimpan di kantong empedu. Empedu ini berfungsi untuk mengemulsikan (memecah) lemak menjadi butiran-butiran kecil agar mudah dicerna oleh enzim.',
-              type: BlockType.bulletPoint,
-            ),
-            ContentBlock(
-              text:
-                  'Pankreas: Menghasilkan getah pankreas yang berisi enzim-enzim kuat:',
-              type: BlockType.bulletPoint,
-            ),
-            ContentBlock(
-              text: 'Amilase: Melanjutkan pencernaan karbohidrat.',
-              type: BlockType.bulletPoint,
-            ),
-            ContentBlock(
-              text: 'Tripsin: Melanjutkan pencernaan protein.',
-              type: BlockType.bulletPoint,
-            ),
-            ContentBlock(
-              text: 'Lipase: Mencerna lemak yang sudah diemulsikan.',
-              type: BlockType.bulletPoint,
-            ),
-            ContentBlock(
-              text:
-                  'Dinding Usus Halus: Permukaannya dipenuhi oleh jutaan lipatan kecil seperti jari yang disebut vili. Vili ini memperluas area penyerapan secara drastis, memungkinkan zat-zat gizi yang sudah sederhana (gula, asam amino, asam lemak) diserap masuk ke dalam aliran darah.',
-              type: BlockType.bulletPoint,
-            ),
-          ],
-        ),
-        ContentSection(
-          subtitle: '3.5 Pengelola Sisa: Usus Besar dan Rektum',
-          blocks: [
-            ContentBlock(
-              text:
-                  'Sisa makanan yang tidak dapat dicerna atau diserap (terutama serat) akan melanjutkan perjalanannya ke usus besar. Fungsi utama usus besar adalah:',
-            ),
-            ContentBlock(
-              text:
-                  'Penyerapan Air: Menyerap kembali sebagian besar air dari sisa makanan, memadatkannya menjadi feses.',
-              type: BlockType.bulletPoint,
-            ),
-            ContentBlock(
-              text:
-                  'Pembusukan: Dengan bantuan bakteri baik (seperti E. coli), sisa makanan dibusukkan dan beberapa vitamin penting (seperti vitamin K) disintesis.',
-              type: BlockType.bulletPoint,
-            ),
-            ContentBlock(
-              text:
-                  'Feses yang sudah terbentuk kemudian disimpan sementara di rektum, bagian ujung dari usus besar, sebelum akhirnya dikeluarkan dari tubuh.',
-            ),
-          ],
-        ),
-        ContentSection(
-          subtitle: '3.6 Pintu Keluar: Anus',
-          blocks: [
-            ContentBlock(
-              text:
-                  'Anus adalah lubang di ujung saluran pencernaan tempat feses dikeluarkan dari tubuh melalui proses yang disebut defekasi.',
             ),
           ],
         ),
@@ -229,42 +76,119 @@ class DigestiveSystemContent {
 
     // Bab 4
     ChapterContent(
-      title: 'Gangguan Umum pada Sistem Pencernaan dan Cara Mencegahnya',
+      title: 'Organ-Organ dalam Sistem Pencernaan',
       sections: [
         ContentSection(
+          subtitle: '1. Mulut',
           blocks: [
             ContentBlock(
               text:
-                  'Sistem yang kompleks ini bisa mengalami gangguan jika tidak dirawat dengan baik. Memahami masalah ini penting untuk menjaga kesehatan.',
+                  'Mulut adalah tempat pertama makanan masuk. Gigi mengunyah makanan, lidah membantu mengaduk dan menelan makanan, dan kelenjar ludah menghasilkan air liur (saliva) yang mengandung enzim amilase. Enzim amilase membantu mencerna karbohidrat menjadi gula sederhana.',
+            ),
+            ContentBlock(
+              text: 'assets/images/materi-3.jpg',
+              type: BlockType.image,
             ),
             ContentBlock(
               text:
-                  'Sembelit (Konstipasi): Kesulitan buang air besar yang disebabkan oleh feses yang keras dan kering. Umumnya terjadi karena kurangnya asupan serat dan cairan.',
+                  'Di mulut, proses pencernaan dimulai dengan gigi. Setiap jenis gigi memiliki bentuk dan fungsi yang berbeda.',
+            ),
+            ContentBlock(
+              text:
+                  '1. Gigi Seri (Insisivus) \nTerletak di bagian depan mulut. Berfungsi untuk memotong makanan. Kita memiliki 8 gigi seri (4 atas dan 4 bawah).',
+            ),
+            ContentBlock(
+              text:
+                  '2. Gigi Taring (Caninus) \nTerletak di sebelah gigi seri. Berfungsi untuk merobek makanan, terutama daging. Ada 4 gigi taring (2 atas dan 2 bawah)',
+            ),
+            ContentBlock(
+              text:
+                  '3. Gigi Geraham (Molar dan Premolar) \nTerletak di bagian belakang mulut. Berfungsi untuk menghaluskan dan menggiling makanan. Jumlahnya lebih banyak daripada jenis gigi lainnya (Wahono, 2021).',
+            ),
+          ],
+        ),
+        ContentSection(
+          subtitle: '2. Kerongkongan',
+          blocks: [
+            ContentBlock(
+              text:
+                  'Kerongkongan adalah saluran yang menghubungkan mulut ke lambung. Makanan didorong oleh gerakan otot yang disebut gerakan peristaltik.',
+            ),
+          ],
+        ),
+        ContentSection(
+          subtitle: '3. Lambung',
+          blocks: [
+            ContentBlock(
+              text:
+                  'Lambung adalah kantong berotot yang mencampur makanan dengan asam lambung (HCl) dan enzim pepsin',
+            ),
+            ContentBlock(
+              text: 'assets/images/materi-4.jpg',
+              type: BlockType.image,
+            ),
+            ContentBlock(
+              text:
+                  'Asam lambung membunuh kuman dan membantu menguraikan makanan.',
+              type: BlockType.bulletPoint,
+            ),
+            ContentBlock(
+              text: 'Pepsin mencerna protein menjadi molekul yang lebih kecil.',
+              type: BlockType.bulletPoint,
+            ),
+          ],
+        ),
+        ContentSection(
+          subtitle: '4. Usus Halus',
+          blocks: [
+            ContentBlock(
+              text:
+                  'Setelah dari lambung, makanan masuk ke usus halus. Di sini terjadi proses pencernaan lanjutan dan penyerapan zat gizi.',
+            ),
+            ContentBlock(
+              text: 'assets/images/materi-5.jpg',
+              type: BlockType.image,
+            ),
+            ContentBlock(text: 'Organ lain yang membantu usus halus:'),
+            ContentBlock(
+              text: 'Hati menghasilkan empedu untuk memecah lemak',
               type: BlockType.bulletPoint,
             ),
             ContentBlock(
               text:
-                  'Diare: Kondisi di mana buang air besar menjadi encer dan frekuensinya meningkat. Sering kali disebabkan oleh infeksi bakteri atau virus dari makanan atau minuman yang terkontaminasi.',
+                  'Pankreas menghasilkan enzim tambahan: \nAmilase (melanjutkan pencernaan karbohidrat),\nTripsin (pencernaan protein),\nLipase (pencernaan lemak).',
               type: BlockType.bulletPoint,
             ),
             ContentBlock(
               text:
-                  'Maag (Gastritis): Rasa nyeri atau perih di ulu hati akibat peradangan pada dinding lambung, seringkali karena produksi asam lambung yang berlebihan.',
-              type: BlockType.bulletPoint,
+                  'Dinding usus halus memiliki tonjolan kecil yang disebut vili, tempat terjadinya penyerapan zat gizi ke dalam darah.',
             ),
+          ],
+        ),
+        ContentSection(
+          subtitle: '5. Usus Besar',
+          blocks: [
             ContentBlock(
               text:
-                  'Keracunan Makanan: Gejala seperti mual, muntah, dan diare yang muncul setelah mengonsumsi makanan yang terkontaminasi oleh kuman atau racun.',
-              type: BlockType.bulletPoint,
+                  'Sisa makanan yang tidak dicerna masuk ke usus besar. Di sini, air diserap kembali, dan sisa makanan dipadatkan menjadi feses (kotoran).',
             ),
+          ],
+        ),
+        ContentSection(
+          subtitle: '6. Rektum',
+          blocks: [
             ContentBlock(
               text:
-                  'Infeksi Usus: Peradangan pada usus yang disebabkan oleh bakteri atau parasit.',
-              type: BlockType.bulletPoint,
+                  'Rektum adalah bagian akhir dari usus besar yang berfungsi sebagai tempat penyimpanan sementara feses (kotoran) sebelum dikeluarkan melalui anus.',
             ),
+          ],
+        ),
+        ContentSection(
+          subtitle: '7. Anus',
+          blocks: [
             ContentBlock(
               text:
-                  'Pencegahan adalah kunci. Dengan menerapkan gaya hidup sehat, kita bisa menjaga "mesin" pencernaan kita tetap berfungsi optimal.',
+                  'Feses dikeluarkan dari tubuh melalui anus. Proses ini disebut defekasi (Dwi, 2022).',
             ),
           ],
         ),
@@ -273,47 +197,121 @@ class DigestiveSystemContent {
 
     // Bab 5
     ChapterContent(
-      title: 'Panduan Praktis Menjaga Kesehatan Sistem Pencernaan',
+      title: 'Gangguan pada Sistem Pencernaan',
       sections: [
         ContentSection(
           blocks: [
             ContentBlock(
               text:
-                  'Merawat sistem pencernaan adalah investasi jangka panjang untuk kesehatan tubuh secara keseluruhan. Berikut adalah langkah-langkah praktis yang bisa diterapkan:',
+                  'Sistem pencernaan bisa mengalami gangguan jika kita tidak menjaga pola makan dan kebersihan makanan. Berikut beberapa gangguan yang sering terjadi:',
             ),
             ContentBlock(
               text:
-                  'Konsumsi Makanan Kaya Serat: Makanlah banyak sayuran, buah-buahan, dan biji-bijian utuh. Serat membantu melancarkan pergerakan usus dan mencegah sembelit.',
+                  'Sembelit: susah buang air besar karena kurang serat dan air.',
               type: BlockType.bulletPoint,
             ),
             ContentBlock(
               text:
-                  'Minum Air yang Cukup: Air sangat penting untuk membantu proses pencernaan dan penyerapan nutrisi, serta mencegah dehidrasi yang dapat menyebabkan sembelit.',
+                  'Diare: buang air besar cair dan sering, disebabkan oleh bakteri atau virus.',
+              type: BlockType.bulletPoint,
+            ),
+            ContentBlock(
+              text: 'Maag: nyeri pada lambung karena asam lambung berlebih.',
               type: BlockType.bulletPoint,
             ),
             ContentBlock(
               text:
-                  'Makan Secara Teratur dan Penuh Kesadaran: Hindari makan terburu-buru. Kunyah makanan secara perlahan untuk membantu kerja mulut dan lambung.',
+                  'Keracunan makanan: terjadi karena mengonsumsi makanan yang tercemar kuman atau zat beracun.',
+              type: BlockType.bulletPoint,
+            ),
+            ContentBlock(
+              text: 'Infeksi usus: disebabkan oleh bakteri atau parasit.',
+              type: BlockType.bulletPoint,
+            ),
+          ],
+        ),
+      ],
+    ),
+
+    // Bab 6
+    ChapterContent(
+      title: 'Menjaga Kesehatan Sistem Pencernaan',
+      sections: [
+        ContentSection(
+          blocks: [
+            ContentBlock(
+              text:
+                  'Agar sistem pencernaan tetap sehat dan berfungsi dengan baik, kita perlu melakukan kebiasaan baik seperti:',
+            ),
+            ContentBlock(
+              text: 'Makan makanan sehat dan kaya serat (sayur dan buah).',
+              type: BlockType.bulletPoint,
+            ),
+            ContentBlock(
+              text: 'Minum air putih yang cukup.',
+              type: BlockType.bulletPoint,
+            ),
+            ContentBlock(
+              text: 'Makan secara teratur dan tidak terburu-buru.',
+              type: BlockType.bulletPoint,
+            ),
+            ContentBlock(
+              text: 'Cuci tangan sebelum makan.',
+              type: BlockType.bulletPoint,
+            ),
+            ContentBlock(
+              text: 'Hindari makanan yang tidak bersih atau jajan sembarangan.',
+              type: BlockType.bulletPoint,
+            ),
+            ContentBlock(
+              text: 'Berolahraga secara rutin.',
+              type: BlockType.bulletPoint,
+            ),
+          ],
+        ),
+      ],
+    ),
+
+    // Bab 7
+    ChapterContent(
+      title: 'Kesimpulan',
+      sections: [
+        ContentSection(
+          blocks: [
+            ContentBlock(
+              text:
+                  'Sistem pencernaan adalah sistem penting dalam tubuh manusia yang bertugas mengolah makanan agar tubuh bisa menyerap zat gizinya. Organ-organ seperti mulut, lambung, usus, dan enzim pencernaan bekerja sama dalam proses ini. Agar sistem pencernaan bekerja dengan baik, kita perlu menjaga pola makan, kebersihan, dan gaya hidup sehat.',
+            ),
+          ],
+        ),
+      ],
+    ),
+
+    // Daftar Pustaka
+    ChapterContent(
+      title: 'Daftar Pustaka',
+      sections: [
+        ContentSection(
+          blocks: [
+            ContentBlock(
+              text:
+                  'Kementerian Pendidikan dan Kebudayaan. (2022). Buku Siswa IPAS Kelas V SD Kurikulum Merdeka. Jakarta: Pusat Perbukuan.',
               type: BlockType.bulletPoint,
             ),
             ContentBlock(
               text:
-                  'Jaga Kebersihan: Selalu cuci tangan dengan sabun sebelum makan untuk mencegah masuknya kuman ke dalam tubuh. Hindari jajan di tempat yang kebersihannya diragukan.',
+                  'Suparno. (2020). Biologi Untuk SMP dan MTs. Jakarta: Grasindo.',
               type: BlockType.bulletPoint,
             ),
             ContentBlock(
               text:
-                  'Kelola Stres: Stres dapat memengaruhi fungsi sistem pencernaan. Lakukan aktivitas yang menenangkan seperti meditasi atau olahraga.',
+                  'Widodo, Wahono. (2021). Ilmu Pengetahuan Alam untuk SD/MI Kelas V. Jakarta: Erlangga.',
               type: BlockType.bulletPoint,
             ),
             ContentBlock(
               text:
-                  'Rutin Berolahraga: Aktivitas fisik dapat merangsang kontraksi otot usus, membantu makanan bergerak lebih lancar di sepanjang saluran pencernaan.',
+                  'Nugroho, Wasis Dwi dkk. (2022). Ilmu Pengetahuan Alam dan Sosial SD Kelas V. Jakarta: Pusat Perbukuan Kemendikbudristek.',
               type: BlockType.bulletPoint,
-            ),
-            ContentBlock(
-              text:
-                  'Dengan memahami setiap detail dari cara kerja sistem pencernaan, kita bisa lebih menghargai proses luar biasa yang terjadi di dalam tubuh dan membuat pilihan yang lebih baik untuk menjaga kesehatannya.',
             ),
           ],
         ),

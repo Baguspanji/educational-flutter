@@ -5,14 +5,14 @@ import '../models/chapter_content_model.dart';
 import '../data/digestive_system_content.dart';
 import '../widgets/custom_button.dart';
 
-class MateriSingleScreen extends StatefulWidget {
-  const MateriSingleScreen({super.key});
+class MateriScreen extends StatefulWidget {
+  const MateriScreen({super.key});
 
   @override
-  State<MateriSingleScreen> createState() => _MateriSingleScreenState();
+  State<MateriScreen> createState() => _MateriScreenState();
 }
 
-class _MateriSingleScreenState extends State<MateriSingleScreen> {
+class _MateriScreenState extends State<MateriScreen> {
   late Materi? materi;
   int currentChapterIndex = 0;
   bool isLoading = true;
@@ -27,19 +27,21 @@ class _MateriSingleScreenState extends State<MateriSingleScreen> {
   void _loadMateri() {
     // In a real app, this would be an async operation
     materi = Materi(
-      id: 'bio-007',
+      id: 'bio-001',
       title: 'Sistem Pencernaan',
       category: 'Biologi',
       createdAt: DateTime(2025, 7, 10),
       description: 'Memahami Sistem Pencernaan Manusia dan Fungsinya',
       chapters: [
-        'Pengantar Sistem Pencernaan - "Mesin" Pengolah Energi Tubuh',
-        'Dua Proses Utama Pencernaan - Mekanik vs. Kimiawi',
-        'Organ-Organ Utama Sistem Pencernaan - Tur di Sepanjang Saluran',
-        'Gangguan Umum pada Sistem Pencernaan dan Cara Mencegahnya',
-        'Panduan Praktis Menjaga Kesehatan Sistem Pencernaan',
+        'Cover Materi - Sistem Pencernaan',
+        'Apa itu Sistem Pencernaan?',
+        'Jenis-Jenis Pencernaan',
+        'Organ-Organ dalam Sistem Pencernaan',
+        'Gangguan pada Sistem Pencernaan',
+        'Menjaga Kesehatan Sistem Pencernaan',
+        'Kesimpulan',
+        'Daftar Pustaka',
       ],
-      difficultyLevel: 'Menengah',
     );
     setState(() {
       isLoading = false;
@@ -91,11 +93,11 @@ class _MateriSingleScreenState extends State<MateriSingleScreen> {
               children: [
                 // Header info
                 _buildHeader(context),
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
 
                 // Chapter navigation
                 _buildChapterNav(context),
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
 
                 // Chapter content
                 _buildChapterContent(context),
@@ -114,24 +116,6 @@ class _MateriSingleScreenState extends State<MateriSingleScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Category badge
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(
-            color: _getCategoryColor(materi!.category).withOpacity(0.2),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: Text(
-            materi!.category,
-            style: TextStyle(
-              color: _getCategoryColor(materi!.category),
-              fontWeight: FontWeight.bold,
-              fontSize: 12,
-            ),
-          ),
-        ),
-        const SizedBox(height: 12),
-
         // Title and metadata
         Text(
           materi!.title,
@@ -149,7 +133,7 @@ class _MateriSingleScreenState extends State<MateriSingleScreen> {
             _buildMetadataItem(
               context,
               Icons.library_books,
-              '${materi!.chapters.length} Bab',
+              '${materi!.chapters.length} Bagian',
             ),
             const SizedBox(width: 16),
             _buildMetadataItem(
@@ -187,7 +171,7 @@ class _MateriSingleScreenState extends State<MateriSingleScreen> {
         Row(
           children: [
             Text(
-              'Bab ${currentChapterIndex + 1} dari ${materi!.chapters.length}',
+              'Bagian ${currentChapterIndex + 1} dari ${materi!.chapters.length}',
               style: Theme.of(
                 context,
               ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
@@ -198,26 +182,26 @@ class _MateriSingleScreenState extends State<MateriSingleScreen> {
               onPressed: () {
                 _showChaptersBottomSheet(context);
               },
-              tooltip: 'Daftar Bab',
+              tooltip: 'Daftar Bagian',
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        // const SizedBox(height: 8),
 
         // Current chapter title
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Text(
-            materi!.chapters[currentChapterIndex],
-            style: Theme.of(
-              context,
-            ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-          ),
-        ),
+        // Container(
+        //   padding: const EdgeInsets.all(12),
+        //   decoration: BoxDecoration(
+        //     color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+        //     borderRadius: BorderRadius.circular(8),
+        //   ),
+        //   child: Text(
+        //     materi!.chapters[currentChapterIndex],
+        //     style: Theme.of(
+        //       context,
+        //     ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+        //   ),
+        // ),
       ],
     );
   }
@@ -245,7 +229,7 @@ class _MateriSingleScreenState extends State<MateriSingleScreen> {
                   Row(
                     children: [
                       Text(
-                        'Daftar Bab',
+                        'Daftar Bagian',
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -418,8 +402,29 @@ class _MateriSingleScreenState extends State<MateriSingleScreen> {
                     );
 
                   case BlockType.image:
-                    // Image placeholder - in a real app, this would display an actual image
-                    return Container();
+                    // Display the image using the path stored in the text field
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      child: Center(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.grey.shade300,
+                                width: 2,
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Image.asset(
+                              block.text,
+                              fit: BoxFit.contain,
+                              width: double.infinity,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
 
                   case BlockType.paragraph:
                     return Padding(
@@ -441,12 +446,11 @@ class _MateriSingleScreenState extends State<MateriSingleScreen> {
         }).toList(),
 
         // PDF Material Section - only show on last chapter
-        if (currentChapterIndex == materi!.chapters.length - 1) ...[
-          const SizedBox(height: 24),
-          _buildPdfMaterialSection(context),
-        ],
-
-        const SizedBox(height: 32),
+        // if (currentChapterIndex == materi!.chapters.length - 1) ...[
+        //   const SizedBox(height: 24),
+        //   _buildPdfMaterialSection(context),
+        // ],
+        // const SizedBox(height: 32),
         // Add some space at the bottom for better scrolling
         const SizedBox(height: 60),
       ],
@@ -684,24 +688,5 @@ class _MateriSingleScreenState extends State<MateriSingleScreen> {
         ],
       ),
     );
-  }
-
-  Color _getCategoryColor(String category) {
-    switch (category) {
-      case 'Matematika':
-        return Colors.blue.shade700;
-      case 'Fisika':
-        return Colors.purple.shade700;
-      case 'Bahasa':
-        return Colors.green.shade700;
-      case 'Sosial':
-        return Colors.orange.shade700;
-      case 'Kimia':
-        return Colors.red.shade700;
-      case 'Biologi':
-        return Colors.teal.shade700;
-      default:
-        return Colors.grey.shade700;
-    }
   }
 }

@@ -17,7 +17,6 @@ class Content {
 class Materi extends Content {
   final String description;
   final List<String> chapters;
-  final String difficultyLevel;
 
   Materi({
     required super.id,
@@ -27,7 +26,6 @@ class Materi extends Content {
     super.isCompleted,
     required this.description,
     required this.chapters,
-    required this.difficultyLevel,
   });
 }
 
