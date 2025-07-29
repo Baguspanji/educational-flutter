@@ -102,6 +102,7 @@ class Kuis extends Content {
   final int timeInMinutes;
   final int? score; // null if not taken yet
   final DateTime? completedAt;
+  final List<String> questions;
 
   Kuis({
     required super.id,
@@ -114,5 +115,6 @@ class Kuis extends Content {
     required this.timeInMinutes,
     this.score,
     this.completedAt,
+    this.questions = const [],
   });
 }

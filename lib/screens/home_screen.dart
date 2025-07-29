@@ -10,6 +10,7 @@ import 'video_screen.dart';
 import 'lkpd_screen.dart';
 import 'lkpd_single_screen.dart';
 import 'kuis_screen.dart';
+import 'kuis_single_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final int initialTab;
@@ -35,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
     const MateriSingleScreen(),
     // const VideoScreen(),
     const LkpdSingleScreen(),
-    const ArtikelScreen(),
+    const KuisSingleScreen(),
     const ProfilScreen(),
   ];
 
