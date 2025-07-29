@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/content_models.dart';
-import '../repositories/repositories.dart';
+import '../models/chapter_content_model.dart';
+import '../data/digestive_system_content.dart';
 import '../widgets/custom_button.dart';
 
 class MateriSingleScreen extends StatefulWidget {
@@ -144,12 +145,12 @@ class _MateriSingleScreenState extends State<MateriSingleScreen> {
         // Metadata row
         Row(
           children: [
-            _buildMetadataItem(
-              context,
-              Icons.signal_cellular_alt,
-              materi!.difficultyLevel,
-            ),
-            const SizedBox(width: 16),
+            // _buildMetadataItem(
+            //   context,
+            //   Icons.signal_cellular_alt,
+            //   materi!.difficultyLevel,
+            // ),
+            // const SizedBox(width: 16),
             _buildMetadataItem(
               context,
               Icons.library_books,
@@ -300,48 +301,149 @@ class _MateriSingleScreenState extends State<MateriSingleScreen> {
   }
 
   Widget _buildChapterContent(BuildContext context) {
-    // In a real app, this would load the actual content for the chapter
-    // Here we're just showing a placeholder
+    // Get the actual content for this chapter from our data model
+    final chapterContent = DigestiveSystemContent.chapters[currentChapterIndex];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          materi!.chapters[currentChapterIndex],
-          style: Theme.of(
-            context,
-          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 16),
-        Text(
-          'Konten materi untuk bab ini akan ditampilkan di sini. '
-          'Pada aplikasi yang sebenarnya, konten ini akan berisi teks, gambar, '
-          'dan mungkin interaksi lainnya yang relevan dengan topik pembelajaran.',
-          style: Theme.of(context).textTheme.bodyLarge,
-        ),
-        const SizedBox(height: 16),
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.grey.shade100,
-            borderRadius: BorderRadius.circular(8),
+          chapterContent.title,
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).colorScheme.primary,
           ),
-          child: Column(
+        ),
+        const SizedBox(height: 20),
+
+        // Loop through all sections in this chapter
+        ...chapterContent.sections.map((section) {
+          return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Catatan Penting:',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'Ini adalah contoh bagian penting dari materi yang mungkin '
-                'perlu diperhatikan khusus oleh pengguna.',
-              ),
+              // Section subtitle if available
+              if (section.subtitle != null) ...[
+                const SizedBox(height: 16),
+                Text(
+                  section.subtitle!,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                ),
+                const SizedBox(height: 8),
+              ],
+
+              // Loop through all content blocks in this section
+              ...section.blocks.map((block) {
+                switch (block.type) {
+                  case BlockType.bulletPoint:
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(width: 8),
+                          Container(
+                            margin: const EdgeInsets.only(top: 8),
+                            width: 6,
+                            height: 6,
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.primary,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 4.0),
+                              child: Text(
+                                block.text,
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.bodyMedium?.copyWith(height: 1.5),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+
+                  case BlockType.numberPoint:
+                    // Handle numbered points
+                    return Container();
+
+                  case BlockType.heading:
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
+                      child: Text(
+                        block.text,
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                    );
+
+                  case BlockType.subheading:
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 12.0, bottom: 6.0),
+                      child: Text(
+                        block.text,
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey.shade800,
+                        ),
+                      ),
+                    );
+
+                  case BlockType.note:
+                    return Container(
+                      margin: const EdgeInsets.symmetric(vertical: 12.0),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.info_outline,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              block.text,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+
+                  case BlockType.image:
+                    // Image placeholder - in a real app, this would display an actual image
+                    return Container();
+
+                  case BlockType.paragraph:
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: Text(
+                        block.text,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodyMedium?.copyWith(height: 1.6),
+                      ),
+                    );
+                }
+              }).toList(),
+
+              // Add some spacing between sections
+              const SizedBox(height: 16),
             ],
-          ),
-        ),
+          );
+        }).toList(),
 
         // PDF Material Section - only show on last chapter
         if (currentChapterIndex == materi!.chapters.length - 1) ...[

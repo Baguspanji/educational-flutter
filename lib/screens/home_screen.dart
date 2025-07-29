@@ -207,16 +207,16 @@ class HomeContentScreen extends StatelessWidget {
               color: Theme.of(context).colorScheme.primary,
             ),
           ),
-          const SizedBox(height: 4),
-          Text(
-            'Materi tentang sistem pencernaan manusia',
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
+          // const SizedBox(height: 4),
+          // Text(
+          //   'Materi tentang sistem pencernaan manusia',
+          //   style: Theme.of(context).textTheme.bodyLarge,
+          // ),
           const SizedBox(height: 16),
 
           // Content Image Overview
           Image.asset(
-            'assets/images/sistem-pencernaan.png',
+            'assets/images/sistem-pencernaan-siluet.png',
             width: MediaQuery.of(context).size.width - 100,
             fit: BoxFit.fitHeight,
           ),
