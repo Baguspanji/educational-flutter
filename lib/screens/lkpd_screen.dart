@@ -21,6 +21,17 @@ class _LkpdScreenState extends State<LkpdScreen> {
   // Text controllers for name and group inputs
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _groupController = TextEditingController();
+
+  // Text controllers for question inputs
+  final TextEditingController _question1Controller = TextEditingController();
+  final TextEditingController _question2Controller = TextEditingController();
+  final TextEditingController _question3Controller = TextEditingController();
+  final TextEditingController _question4Controller = TextEditingController();
+  final TextEditingController _question5Controller = TextEditingController();
+  final TextEditingController _question6Controller = TextEditingController();
+  final TextEditingController _question8Controller = TextEditingController();
+  final TextEditingController _question9Controller = TextEditingController();
+  final TextEditingController _question10Controller = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -45,6 +56,18 @@ class _LkpdScreenState extends State<LkpdScreen> {
     _scrollController.dispose();
     _nameController.dispose();
     _groupController.dispose();
+
+    // Dispose question controllers
+    _question1Controller.dispose();
+    _question2Controller.dispose();
+    _question3Controller.dispose();
+    _question4Controller.dispose();
+    _question5Controller.dispose();
+    _question6Controller.dispose();
+    _question8Controller.dispose();
+    _question9Controller.dispose();
+    _question10Controller.dispose();
+
     super.dispose();
   }
 
@@ -166,14 +189,6 @@ class _LkpdScreenState extends State<LkpdScreen> {
                     // Refleksi Content
                     _buildRefleksiSection(),
                     const SizedBox(height: 24),
-
-                    // // LKPD Content Card
-                    // _buildLkpdContentCard(),
-                    // const SizedBox(height: 24),
-
-                    // // Questions Preview
-                    // _buildQuestionsPreview(),
-                    // const SizedBox(height: 40),
                   ],
                 ),
               ),
@@ -263,6 +278,36 @@ class _LkpdScreenState extends State<LkpdScreen> {
           ).textTheme.bodySmall?.copyWith(color: Colors.grey.shade700),
         ),
       ],
+    );
+  }
+
+  // Helper method to build answer text field with controller
+  Widget _buildAnswerTextField(
+    TextEditingController controller, {
+    int maxLines = 4,
+    String hintText = 'Ketik jawaban Anda di sini...',
+    EdgeInsets contentPadding = const EdgeInsets.symmetric(
+      horizontal: 12,
+      vertical: 8,
+    ),
+  }) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: TextField(
+        controller: controller,
+        maxLines: maxLines,
+        decoration: InputDecoration(
+          hintText: hintText,
+          border: InputBorder.none,
+          contentPadding: contentPadding,
+        ),
+      ),
     );
   }
 
@@ -413,54 +458,6 @@ class _LkpdScreenState extends State<LkpdScreen> {
     );
   }
 
-  Widget _buildLkpdContentCard() {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Informasi LKPD',
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            _buildInfoRow('Jenis', lkpd!.type),
-            const Divider(),
-            _buildInfoRow('Jumlah Soal', '${lkpd!.questionCount} soal'),
-            const Divider(),
-            _buildInfoRow('Waktu', '${lkpd!.estimatedTimeMinutes} menit'),
-            const Divider(),
-            _buildInfoRow('Tanggal Dibuat', Utils.formatDate(lkpd!.createdAt)),
-            const SizedBox(height: 16),
-            if (lkpd!.isCompleted && lkpd!.score != null)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [_buildScoreBadge()],
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInfoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label, style: TextStyle(color: Colors.grey.shade700)),
-          Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
-        ],
-      ),
-    );
-  }
-
   Widget _buildInstructionsCard() {
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -545,136 +542,6 @@ class _LkpdScreenState extends State<LkpdScreen> {
     );
   }
 
-  Widget _buildQuestionsPreview() {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.question_answer,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  'Contoh Pertanyaan',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade300),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Pertanyaan 1:',
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Sebutkan urutan organ yang dilalui makanan dalam proses pencernaan manusia!',
-                    style: TextStyle(height: 1.5),
-                  ),
-                  const SizedBox(height: 16),
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade200,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: Colors.grey.shade400,
-                        style: BorderStyle.solid,
-                      ),
-                    ),
-                    child: const Row(
-                      children: [
-                        Icon(Icons.lock, size: 18, color: Colors.grey),
-                        SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            'Jawaban akan tersedia setelah Anda mengerjakan LKPD',
-                            style: TextStyle(
-                              fontStyle: FontStyle.italic,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 16),
-            Center(
-              child: Text(
-                'Dan ${lkpd!.questionCount - 1} pertanyaan lainnya...',
-                style: TextStyle(
-                  color: Colors.grey.shade600,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildScoreBadge() {
-    final score = lkpd!.score ?? 0;
-    Color scoreColor = score >= 80
-        ? Colors.green
-        : score >= 60
-        ? Colors.orange
-        : Colors.red;
-
-    return Container(
-      width: 110,
-      height: 110,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: scoreColor.withOpacity(0.1),
-        border: Border.all(color: scoreColor, width: 3),
-      ),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Nilai', style: TextStyle(fontSize: 14, color: scoreColor)),
-            Text(
-              '$score',
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: scoreColor,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildHotsSection() {
     return Card(
       elevation: 2,
@@ -713,22 +580,7 @@ class _LkpdScreenState extends State<LkpdScreen> {
               ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade300),
-              ),
-              child: const Text(
-                '...........................................................................................................................',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-            ),
+            _buildAnswerTextField(_question1Controller),
             const SizedBox(height: 16),
 
             // Question 2
@@ -739,22 +591,7 @@ class _LkpdScreenState extends State<LkpdScreen> {
               ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade300),
-              ),
-              child: const Text(
-                '...........................................................................................................................',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-            ),
+            _buildAnswerTextField(_question2Controller),
             const SizedBox(height: 16),
 
             // Question 3
@@ -765,22 +602,7 @@ class _LkpdScreenState extends State<LkpdScreen> {
               ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade300),
-              ),
-              child: const Text(
-                '...........................................................................................................................',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-            ),
+            _buildAnswerTextField(_question3Controller),
           ],
         ),
       ),
@@ -915,48 +737,18 @@ class _LkpdScreenState extends State<LkpdScreen> {
               ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade300),
-              ),
-              child: const Text(
-                '...........................................................................................................................',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-            ),
+            _buildAnswerTextField(_question4Controller),
             const SizedBox(height: 16),
 
             // Question 5
             Text(
-              '5. Pilih salah satu jenis bakteri dari kasus (misal: E. coli). Jelaskan bagaimana bakteri itu masuk ke tubuh, bagaimana pengaruhnya terhadap sistem pencernaan, dan bagaimana tubuh merespon.',
+              '5. Buatlah rancangan penelitian sederhana untuk menguji kualitas makanan yang aman.',
               style: Theme.of(
                 context,
               ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade300),
-              ),
-              child: const Text(
-                '...........................................................................................................................',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-            ),
+            _buildAnswerTextField(_question5Controller),
             const SizedBox(height: 16),
 
             // Question 6
@@ -967,22 +759,7 @@ class _LkpdScreenState extends State<LkpdScreen> {
               ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade300),
-              ),
-              child: const Text(
-                '...........................................................................................................................',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-            ),
+            _buildAnswerTextField(_question6Controller),
           ],
         ),
       ),
@@ -1053,19 +830,35 @@ class _LkpdScreenState extends State<LkpdScreen> {
               height: 120,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.grey.shade100,
+                color: Colors.grey.shade50,
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: Colors.grey.shade300),
-                // borderStyle: BorderStyle.solid,
               ),
-              child: const Center(
-                child: Text(
-                  'Unggah infografis Anda di sini',
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontStyle: FontStyle.italic,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.upload_file,
+                    size: 32,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primary.withOpacity(0.5),
                   ),
-                ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Unggah infografis Anda di sini',
+                    style: TextStyle(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary.withOpacity(0.7),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Format: JPG, PNG atau PDF (maks. 5MB)',
+                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                  ),
+                ],
               ),
             ),
           ],
@@ -1193,22 +986,7 @@ class _LkpdScreenState extends State<LkpdScreen> {
               ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade300),
-              ),
-              child: const Text(
-                '...........................................................................................................................',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-            ),
+            _buildAnswerTextField(_question8Controller),
             const SizedBox(height: 16),
 
             // Question 9
@@ -1219,22 +997,7 @@ class _LkpdScreenState extends State<LkpdScreen> {
               ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade300),
-              ),
-              child: const Text(
-                '...........................................................................................................................',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-            ),
+            _buildAnswerTextField(_question9Controller),
             const SizedBox(height: 16),
 
             // Question 10
@@ -1245,22 +1008,7 @@ class _LkpdScreenState extends State<LkpdScreen> {
               ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade300),
-              ),
-              child: const Text(
-                '...........................................................................................................................',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-            ),
+            _buildAnswerTextField(_question10Controller),
           ],
         ),
       ),
