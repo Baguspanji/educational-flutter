@@ -3,14 +3,11 @@ import 'package:flutter/material.dart';
 import '../widgets/custom_button.dart';
 import '../repositories/repositories.dart';
 import '../models/content_models.dart';
-import 'materi_screen.dart';
-import 'profil_screen.dart';
-import 'artikel_screen.dart';
-import 'video_screen.dart';
 import 'lkpd_screen.dart';
 import 'lkpd_single_screen.dart';
 import 'kuis_screen.dart';
 import 'kuis_single_screen.dart';
+import 'info_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final int initialTab;
@@ -37,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // const VideoScreen(),
     const LkpdSingleScreen(),
     const KuisSingleScreen(),
-    const ProfilScreen(),
+    const InfoScreen(),
   ];
 
   @override
