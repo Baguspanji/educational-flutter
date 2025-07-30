@@ -361,36 +361,34 @@ class _LkpdScreenState extends State<LkpdScreen> {
     ),
   }) {
     // Check if field is empty for border styling
-    bool isEmpty = controller.text.trim().isEmpty;
+    bool isEmpty = _submitAttempted && controller.text.trim().isEmpty;
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: isEmpty ? Colors.red.withOpacity(0.5) : Colors.grey.shade300,
-          width: isEmpty ? 2.0 : 1.0,
+    return TextField(
+      controller: controller,
+      maxLines: maxLines,
+      decoration: InputDecoration(
+        hintText: hintText,
+        border: const OutlineInputBorder(),
+        contentPadding: contentPadding,
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: isEmpty ? Colors.red.withOpacity(0.7) : Colors.grey.shade400,
+            width: isEmpty ? 2.0 : 1.0,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: isEmpty ? Colors.red : Theme.of(context).colorScheme.primary,
+            width: 2.0,
+          ),
         ),
       ),
-      child: TextField(
-        controller: controller,
-        maxLines: maxLines,
-        decoration: InputDecoration(
-          hintText: hintText,
-          border: InputBorder.none,
-          contentPadding: contentPadding,
-        ),
-        onChanged: (value) {
-          // Force rebuild on text change to update border color
-          if (isEmpty != (value.trim().isEmpty)) {
-            setState(() {
-              // This setState forces a rebuild with new isEmpty value
-            });
-          }
-        },
-      ),
+      onChanged: (value) {
+        // Force rebuild if user fixes an empty field
+        if (_submitAttempted && value.trim().isNotEmpty) {
+          setState(() {});
+        }
+      },
     );
   }
 
@@ -508,40 +506,49 @@ class _LkpdScreenState extends State<LkpdScreen> {
     int maxLength = 1,
   }) {
     // Check if field is empty for border styling
-    bool isEmpty = controller.text.trim().isEmpty;
+    bool isEmpty = _submitAttempted && controller.text.trim().isEmpty;
 
     return Container(
       height: 32,
-      decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(
-          color: isEmpty ? Colors.red.withOpacity(0.5) : Colors.grey.shade300,
-          width: isEmpty ? 2.0 : 1.0,
-        ),
-      ),
       child: TextField(
         controller: controller,
         textAlign: TextAlign.center,
         keyboardType: TextInputType.number,
         maxLength: maxLength,
         style: const TextStyle(fontSize: 14),
-        decoration: const InputDecoration(
+        decoration: InputDecoration(
           counterText: '',
-          border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
           hintText: '1-7',
+          contentPadding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+          isDense: true,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(4),
+            borderSide: BorderSide(
+              color: isEmpty
+                  ? Colors.red.withOpacity(0.7)
+                  : Colors.grey.shade400,
+              width: isEmpty ? 2.0 : 1.0,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(4),
+            borderSide: BorderSide(
+              color: isEmpty
+                  ? Colors.red
+                  : Theme.of(context).colorScheme.primary,
+              width: 2.0,
+            ),
+          ),
         ),
         inputFormatters: [
           FilteringTextInputFormatter.digitsOnly,
           FilteringTextInputFormatter.allow(RegExp(r'^[1-7]$')),
         ],
         onChanged: (value) {
-          // Force rebuild on text change to update border color
-          if (isEmpty != (value.trim().isEmpty)) {
-            setState(() {
-              // This setState forces a rebuild with new isEmpty value
-            });
+          // Force rebuild if user fixes an empty field
+          if (_submitAttempted && value.trim().isNotEmpty) {
+            setState(() {});
           }
         },
       ),
@@ -940,7 +947,7 @@ class _LkpdScreenState extends State<LkpdScreen> {
     if (isNameEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Nama tidak boleh kosong'),
+          content: Text('Nama harus diisi'),
           backgroundColor: Colors.red,
         ),
       );
@@ -1134,7 +1141,7 @@ class _LkpdScreenState extends State<LkpdScreen> {
                         ? Colors.green.shade300
                         : (_infografisUrl == null && _submitAttempted
                               ? Colors.red.withOpacity(0.7)
-                              : Colors.grey.shade300),
+                              : Colors.grey.shade400),
                     width: (_infografisUrl == null && _submitAttempted)
                         ? 2.0
                         : 1.0,
@@ -1193,6 +1200,19 @@ class _LkpdScreenState extends State<LkpdScreen> {
                               color: Colors.grey.shade600,
                             ),
                           ),
+
+                          // Show warning if not uploaded after submission attempt
+                          if (_submitAttempted && _infografisUrl == null) ...[
+                            const SizedBox(height: 8),
+                            Text(
+                              'Infografis belum diunggah',
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 12,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                          ],
                         ],
                       ),
                   ],
@@ -1329,6 +1349,15 @@ class _LkpdScreenState extends State<LkpdScreen> {
                 context,
               ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
+            const SizedBox(height: 4),
+            Text(
+              '* Nama wajib diisi',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.red,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
             const SizedBox(height: 8),
             TextField(
               controller: _nameController,
@@ -1342,19 +1371,14 @@ class _LkpdScreenState extends State<LkpdScreen> {
               },
               decoration: InputDecoration(
                 hintText: 'Masukkan nama lengkap',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.grey.shade300),
-                ),
+                border: const OutlineInputBorder(),
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
                   borderSide: BorderSide(
-                    color: _isNameEmpty ? Colors.red : Colors.grey.shade300,
+                    color: _isNameEmpty ? Colors.red : Colors.grey.shade400,
                     width: _isNameEmpty ? 2.0 : 1.0,
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
                   borderSide: BorderSide(
                     color: _isNameEmpty
                         ? Colors.red
@@ -1366,7 +1390,7 @@ class _LkpdScreenState extends State<LkpdScreen> {
                   horizontal: 12,
                   vertical: 12,
                 ),
-                errorText: _isNameEmpty ? 'Nama wajib diisi' : null,
+                errorText: _isNameEmpty ? 'Nama tidak boleh kosong' : null,
               ),
             ),
             const SizedBox(height: 16),
@@ -1382,11 +1406,9 @@ class _LkpdScreenState extends State<LkpdScreen> {
             TextField(
               controller: _groupController,
               decoration: InputDecoration(
+                labelText: 'Kelompok (Opsional)',
                 hintText: 'Masukkan nama kelompok jika ada',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.grey.shade300),
-                ),
+                border: const OutlineInputBorder(),
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 12,
                   vertical: 12,
