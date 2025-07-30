@@ -50,6 +50,65 @@ Aplikasi pembelajaran interaktif yang berfokus pada sistem pencernaan manusia un
    flutter pub get
    ```
 
+4. **Run the app in debug mode:**
+
+   ```bash
+   flutter run
+   ```
+
+## Building Release Versions
+
+### Setting Up Android Release
+
+1. **Generate a keystore file** (if you don't have one already):
+
+   ```bash
+   keytool -genkey -v -keystore ~/upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+   ```
+
+2. **Move the keystore file** to the app's android folder:
+
+   ```bash
+   mv ~/upload-keystore.jks android/app/upload-keystore.jks
+   ```
+
+3. **Update the key.properties file** with your keystore information:
+   - Open `android/key.properties`
+   - Replace placeholder values with your actual keystore password and key password
+
+### Building Android Release
+
+1. **Build an Android APK:**
+
+   ```bash
+   flutter build apk --release
+   ```
+   
+   The APK will be located at `build/app/outputs/flutter-apk/app-release.apk`
+
+2. **Build an Android App Bundle for Play Store:**
+
+   ```bash
+   flutter build appbundle --release
+   ```
+   
+   The bundle will be located at `build/app/outputs/bundle/release/app-release.aab`
+
+### Building iOS Release
+
+1. **Prepare for iOS release:**
+
+   ```bash
+   flutter build ios --release
+   ```
+
+2. **Archive and upload to App Store** using Xcode:
+   - Open `ios/Runner.xcworkspace` in Xcode
+   - Select a real device or "Any iOS Device" as the build target
+   - Go to Product > Archive
+   - Use the Organizer window to validate and distribute your app
+   ```
+
 4. **Jalankan aplikasi:**
 
    ```bash

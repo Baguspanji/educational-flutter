@@ -18,6 +18,11 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # of the product and file versions while build-number is used as the build suffix.
 version: 1.0.0+1
 
+# Release build configuration
+# For building release APKs, use: flutter build apk --release
+# For building release App Bundle, use: flutter build appbundle --release
+# For iOS release build, use: flutter build ios --release
+
 environment:
   sdk: ^3.8.0
 
