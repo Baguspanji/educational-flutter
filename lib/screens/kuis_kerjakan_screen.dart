@@ -18,6 +18,8 @@ class _KuisKerjakanScreenState extends State<KuisKerjakanScreen> {
   final ScrollController _scrollController = ScrollController();
   bool _showBackToTop = false;
   bool _isSubmitting = false;
+  bool _submitAttempted = false;
+  bool _isNameEmpty = false;
 
   // Timer properties
   Timer? _timer;
@@ -91,22 +93,97 @@ class _KuisKerjakanScreenState extends State<KuisKerjakanScreen> {
 
   // Method untuk menyimpan jawaban kuis
   Future<void> _submitQuiz() async {
+    // Set flag that submission was attempted (for showing red borders)
     setState(() {
-      _isSubmitting = true;
+      _submitAttempted = true;
     });
 
     final name = nameController.text.trim();
     final group = groupController.text.trim();
 
-    if (name.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Nama harus diisi')));
+    // Check if name is empty
+    bool isNameEmpty = name.isEmpty;
+    if (isNameEmpty) {
       setState(() {
-        _isSubmitting = false;
+        _isNameEmpty = true;
       });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Nama tidak boleh kosong'),
+          backgroundColor: Colors.red,
+        ),
+      );
       return;
     }
+
+    // Count empty questions by type
+    int emptyMultipleChoiceCount = 0;
+    int emptyShortAnswerCount = 0;
+    int emptyEssayCount = 0;
+
+    // Check multiple choice answers
+    for (int i = 0; i < 15; i++) {
+      if (multipleChoiceAnswers[i] == null) {
+        emptyMultipleChoiceCount++;
+      }
+    }
+
+    // Check short answer questions
+    for (var controller in shortAnswerControllers) {
+      if (controller.text.trim().isEmpty) {
+        emptyShortAnswerCount++;
+      }
+    }
+
+    // Check essay questions
+    for (var controller in essayControllers) {
+      if (controller.text.trim().isEmpty) {
+        emptyEssayCount++;
+      }
+    }
+
+    // Total empty questions
+    int totalEmptyQuestions =
+        emptyMultipleChoiceCount + emptyShortAnswerCount + emptyEssayCount;
+
+    // If there are empty questions, show confirmation dialog
+    if (totalEmptyQuestions > 0) {
+      bool? confirm = await showDialog<bool>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Konfirmasi Pengiriman'),
+            content: Text(
+              'Apakah anda yakin mengirim Jawaban?\n\n'
+              'Terdapat $emptyMultipleChoiceCount pilihan ganda, '
+              '$emptyShortAnswerCount isian singkat, dan '
+              '$emptyEssayCount esai masih belum diisi!',
+              style: const TextStyle(height: 1.5),
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Batal'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text('Kirim'),
+              ),
+            ],
+          );
+        },
+      );
+
+      // If user cancels, stop submission
+      if (confirm != true) {
+        return;
+      }
+    }
+
+    // If we reach here, proceed with submission
+    setState(() {
+      _isSubmitting = true;
+    });
 
     try {
       // Prepare multiple choice answers
@@ -247,12 +324,48 @@ class _KuisKerjakanScreenState extends State<KuisKerjakanScreen> {
                     'Informasi Siswa',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '* Nama wajib diisi',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.red,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
                   const SizedBox(height: 8),
                   TextField(
                     controller: nameController,
-                    decoration: const InputDecoration(
+                    onChanged: (value) {
+                      // Reset error state when user starts typing
+                      if (_isNameEmpty && value.trim().isNotEmpty) {
+                        setState(() {
+                          _isNameEmpty = false;
+                        });
+                      }
+                    },
+                    decoration: InputDecoration(
                       labelText: 'Nama Lengkap',
                       border: OutlineInputBorder(),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: _isNameEmpty
+                              ? Colors.red
+                              : Colors.grey.shade400,
+                          width: _isNameEmpty ? 2.0 : 1.0,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: _isNameEmpty
+                              ? Colors.red
+                              : Theme.of(context).primaryColor,
+                          width: 2.0,
+                        ),
+                      ),
+                      errorText: _isNameEmpty
+                          ? 'Nama tidak boleh kosong'
+                          : null,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -630,11 +743,18 @@ class _KuisKerjakanScreenState extends State<KuisKerjakanScreen> {
     String? imageAsset,
     String? imageCaption,
   }) {
+    // Check if this question is unanswered
+    bool isUnanswered =
+        _submitAttempted && (multipleChoiceAnswers[index] == null);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16.0),
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(
+          color: Colors.grey.shade300,
+          width: isUnanswered ? 2.0 : 1.0,
+        ),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
@@ -770,8 +890,23 @@ class _KuisKerjakanScreenState extends State<KuisKerjakanScreen> {
               },
               dense: true,
               contentPadding: EdgeInsets.zero,
+              activeColor: Theme.of(context).primaryColor,
             );
           }),
+
+          // Add a hint if question is unanswered after submission attempt
+          if (isUnanswered)
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Text(
+                'Soal belum dijawab',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 12,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -785,11 +920,18 @@ class _KuisKerjakanScreenState extends State<KuisKerjakanScreen> {
     String? imageAsset,
     String? imageCaption,
   }) {
+    // Check if this question is unanswered
+    bool isUnanswered =
+        _submitAttempted && shortAnswerControllers[index].text.trim().isEmpty;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16.0),
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(
+          color: Colors.grey.shade300,
+          width: isUnanswered ? 2.0 : 1.0,
+        ),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
@@ -915,11 +1057,41 @@ class _KuisKerjakanScreenState extends State<KuisKerjakanScreen> {
           const SizedBox(height: 12),
           TextField(
             controller: shortAnswerControllers[index],
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               hintText: 'Jawaban Anda',
               border: OutlineInputBorder(),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color:
+                      _submitAttempted &&
+                          shortAnswerControllers[index].text.trim().isEmpty
+                      ? Colors.red.withOpacity(0.7)
+                      : Colors.grey.shade400,
+                  width:
+                      _submitAttempted &&
+                          shortAnswerControllers[index].text.trim().isEmpty
+                      ? 2.0
+                      : 1.0,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color:
+                      _submitAttempted &&
+                          shortAnswerControllers[index].text.trim().isEmpty
+                      ? Colors.red
+                      : Theme.of(context).primaryColor,
+                  width: 2.0,
+                ),
+              ),
             ),
             maxLines: 3,
+            onChanged: (value) {
+              // Force rebuild if user fixes an empty field
+              if (_submitAttempted && value.trim().isNotEmpty) {
+                setState(() {});
+              }
+            },
           ),
         ],
       ),
@@ -934,11 +1106,18 @@ class _KuisKerjakanScreenState extends State<KuisKerjakanScreen> {
     String? imageAsset,
     String? imageCaption,
   }) {
+    // Check if this question is unanswered
+    bool isUnanswered =
+        _submitAttempted && essayControllers[index].text.trim().isEmpty;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16.0),
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(
+          color: Colors.grey.shade300,
+          width: isUnanswered ? 2.0 : 1.0,
+        ),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
@@ -1064,13 +1243,43 @@ class _KuisKerjakanScreenState extends State<KuisKerjakanScreen> {
           const SizedBox(height: 12),
           TextField(
             controller: essayControllers[index],
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               hintText: 'Jawaban Anda',
               border: OutlineInputBorder(),
               counterText: '',
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color:
+                      _submitAttempted &&
+                          essayControllers[index].text.trim().isEmpty
+                      ? Colors.red.withOpacity(0.7)
+                      : Colors.grey.shade400,
+                  width:
+                      _submitAttempted &&
+                          essayControllers[index].text.trim().isEmpty
+                      ? 2.0
+                      : 1.0,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color:
+                      _submitAttempted &&
+                          essayControllers[index].text.trim().isEmpty
+                      ? Colors.red
+                      : Theme.of(context).primaryColor,
+                  width: 2.0,
+                ),
+              ),
             ),
             maxLines: 8,
             maxLength: 2000,
+            onChanged: (value) {
+              // Force rebuild if user fixes an empty field
+              if (_submitAttempted && value.trim().isNotEmpty) {
+                setState(() {});
+              }
+            },
           ),
         ],
       ),

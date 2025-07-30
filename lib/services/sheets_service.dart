@@ -119,7 +119,7 @@ class SheetsService {
       'Essay3',
       'Essay4',
       'Essay5',
-      'Total Score',
+      // 'Total Score',
     ];
 
     await _worksheetKuis!.values.insertRow(1, firstRow);
@@ -228,7 +228,7 @@ class SheetsService {
         essayAnswers['essay3'] ?? '',
         essayAnswers['essay4'] ?? '',
         essayAnswers['essay5'] ?? '',
-        totalScore.toString(),
+        // totalScore.toString(),
       ];
 
       return await _worksheetKuis!.values.appendRow(newRow);
