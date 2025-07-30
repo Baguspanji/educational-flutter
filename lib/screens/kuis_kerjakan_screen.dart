@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../models/content_models.dart';
 import '../services/sheets_service.dart';
@@ -17,6 +18,11 @@ class _KuisKerjakanScreenState extends State<KuisKerjakanScreen> {
   final ScrollController _scrollController = ScrollController();
   bool _showBackToTop = false;
   bool _isSubmitting = false;
+
+  // Timer properties
+  Timer? _timer;
+  int _remainingSeconds = 0;
+  bool _isTimeExpired = false;
 
   // Multiple Choice Section
   Map<int, int?> multipleChoiceAnswers = {};
@@ -265,59 +271,67 @@ class _KuisKerjakanScreenState extends State<KuisKerjakanScreen> {
                   _buildMultipleChoiceQuestion(
                     index: 0,
                     question:
-                        '1. Organ yang berperan dalam proses pencernaan mekanik pertama kali adalah...',
-                    options: ['Mulut', 'Kerongkongan', 'Lambung', 'Usus Halus'],
+                        '1. Saat mengikuti praktik IPA, Sari menggambar urutan sistem pencernaan. Namun, ia menggambar lambung sebelum kerongkongan. Jika kamu membantunya mengurutkan kembali organ dengan benar dari awal makanan masuk hingga keluar, urutan yang tepat adalah...',
+                    options: [
+                      'Mulut – Lambung – Kerongkongan – Usus Halus – Usus Besar – Anus',
+                      'Mulut – Kerongkongan – Lambung – Usus Halus – Usus Besar – Anus',
+                      'Kerongkongan – Mulut – Usus Halus – Lambung – Anus',
+                      'Mulut – Usus Halus – Lambung – Usus Besar – Anus',
+                    ],
                   ),
 
                   // Question 2
                   _buildMultipleChoiceQuestion(
                     index: 1,
                     question:
-                        '2. Enzim yang berperan dalam mencerna karbohidrat di mulut adalah...',
-                    options: ['Amilase', 'Pepsin', 'Lipase', 'Tripsin'],
+                        '2. Seorang siswa menggambarkan sistem pencernaan dengan urutan: Mulut → Lambung → Usus Halus → Usus Besar → Anus. Ia lupa satu organ penting dalam proses tersebut. Organ yang hilang dalam urutan tersebut adalah...',
+                    options: ['Hati', 'Pankreas', 'Kerongkongan', 'Ginjal'],
                   ),
 
                   // Question 3
                   _buildMultipleChoiceQuestion(
                     index: 2,
                     question:
-                        '3. Usus halus memiliki lipatan-lipatan yang disebut...',
-                    options: ['Vili', 'Jonjot', 'Plika', 'Rugae'],
+                        '3. Saat kita mengunyah makanan, air liur dikeluarkan dan bercampur dengan makanan untuk memulai proses kimiawi. Apa fungsi utama mulut dalam proses pencernaan?',
+                    options: [
+                      'Menghasilkan energi',
+                      'Menyerap nutrisi',
+                      'Menghancurkan makanan dan mencampurnya dengan enzim',
+                      'Mengolah makanan menjadi feses',
+                    ],
                   ),
 
                   // Question 4
                   _buildMultipleChoiceQuestion(
                     index: 3,
                     question:
-                        '4. Pencernaan kimiawi lemak terutama terjadi di...',
-                    options: ['Usus halus', 'Lambung', 'Mulut', 'Kerongkongan'],
+                        '4. Dalam lambung, makanan dicerna secara kimiawi dengan bantuan enzim dan asam lambung. Fungsi utama lambung adalah...',
+                    options: [
+                      'Menyerap vitamin',
+                      'Mengubah air menjadi energi',
+                      'Menguraikan makanan menggunakan zat kimia',
+                      'Menyimpan air',
+                    ],
                   ),
 
-                  // Question 5 (with asset image)
+                  // Question 5
                   _buildMultipleChoiceQuestion(
                     index: 4,
                     question:
-                        '5. Perhatikan gambar sistem pencernaan berikut ini.\n{image}\nBagian yang ditandai dengan X adalah organ dimana proses penyerapan air terutama terjadi. Organ tersebut adalah...',
-                    options: [
-                      'Usus besar',
-                      'Usus halus',
-                      'Lambung',
-                      'Kerongkongan',
-                    ],
-                    imageAsset: 'assets/images/soal-1.png',
-                    // imageCaption: 'Gambar 1. Sistem pencernaan manusia.',
+                        '5. Setelah makanan melalui lambung, zat gizi mulai diserap oleh tubuh. Organ yang paling banyak menyerap nutrisi tersebut adalah...',
+                    options: ['Kerongkongan', 'Usus halus', 'Mulut', 'Hati'],
                   ),
 
                   // Question 6
                   _buildMultipleChoiceQuestion(
                     index: 5,
                     question:
-                        '6. Makanan yang dicerna di mulut akan masuk ke lambung melalui...',
+                        '6. Roti terasa manis saat dikunyah dalam waktu lama. Hal ini terjadi karena...',
                     options: [
-                      'Kerongkongan',
-                      'Tenggorokan',
-                      'Usus halus',
-                      'Kardiak',
+                      'Enzim di usus mengubah tepung menjadi garam',
+                      'Proses mekanik menghancurkan gula',
+                      'Air liur mengubah zat tepung menjadi gula sederhana',
+                      'Lambung menghasilkan rasa manis',
                     ],
                   ),
 
@@ -325,45 +339,117 @@ class _KuisKerjakanScreenState extends State<KuisKerjakanScreen> {
                   _buildMultipleChoiceQuestion(
                     index: 6,
                     question:
-                        '7. Bagian akhir dari sistem pencernaan adalah...',
-                    options: ['Anus', 'Rektum', 'Usus besar', 'Usus halus'],
+                        '7. Jika tubuh tidak memproduksi enzim di lambung dan usus halus, maka...',
+                    options: [
+                      'Proses pembuangan akan terganggu',
+                      'Zat gizi tidak akan terserap dengan baik',
+                      'Air tidak dapat masuk ke dalam tubuh',
+                      'Makanan langsung berubah menjadi energi',
+                    ],
                   ),
 
-                  // Question 8 (with image)
+                  // Question 8
                   _buildMultipleChoiceQuestion(
                     index: 7,
                     question:
-                        'Perhatikan gambar sistem pencernaan berikut ini.\n{image}\nJika bagian yang ditandai dengan huruf A rusak atau tidak berfungsi, apa akibatnya bagi keseluruhan proses pencernaan?',
+                        '8. Air liur dan asam lambung memiliki fungsi berbeda. Apa perbedaan utama proses pencernaan yang terjadi di mulut dan di lambung?',
                     options: [
-                      'Pencernaan lemak terganggu karena cairan empedu tidak dapat diproduksi',
-                      'Penyerapan air terganggu sehingga terjadi diare',
-                      'Pencernaan karbohidrat tidak bisa dimulai karena tidak ada enzim amilase',
-                      'Makanan tidak dapat masuk ke lambung',
+                      'Di mulut makanan hanya ditelan, di lambung dikunyah',
+                      'Di mulut terjadi pencernaan mekanik saja, di lambung tidak',
+                      'Di mulut ada proses mekanik dan kimiawi awal, di lambung terjadi pencernaan kimiawi lanjutan',
+                      'Di mulut zat gizi diserap, di lambung zat dibuang',
                     ],
-                    imageUrl:
-                        'https://sistem.bio/wp-content/uploads/2019/12/sistem-pencernaan-manusia.png',
-                    imageCaption:
-                        'Gambar 2. Organ hati (A) dalam sistem pencernaan manusia.',
                   ),
 
                   // Question 9
                   _buildMultipleChoiceQuestion(
                     index: 8,
                     question:
-                        '9. Gangguan pencernaan berupa peradangan pada dinding lambung disebut...',
-                    options: ['Gastritis', 'Diare', 'Konstipasi', 'Maag'],
+                        '9. Seorang anak mengalami diare setelah jajan sembarangan di depan sekolah. Menurut analisismu, penyebab dari gangguan tersebut kemungkinan besar adalah...',
+                    options: [
+                      'Makanan berserat tinggi',
+                      'Konsumsi sayur segar',
+                      'Kebersihan makanan yang buruk dan masuknya bakteri',
+                      'Porsi makan yang terlalu kecil',
+                    ],
                   ),
 
                   // Question 10
                   _buildMultipleChoiceQuestion(
                     index: 9,
                     question:
-                        '10. Vitamin yang diserap di usus halus dengan bantuan empedu adalah...',
+                        '10. Andi mengalami perut kembung dan sulit buang air besar. Setelah dianalisis, kebiasaannya adalah makan cepat dan tidak suka minum air. Solusi yang tepat untuk masalah Andi adalah...',
                     options: [
-                      'Vitamin A',
-                      'Vitamin C',
-                      'Vitamin B',
-                      'Vitamin B12',
+                      'Menghindari aktivitas fisik',
+                      'Mengurangi waktu makan',
+                      'Menambahkan porsi daging',
+                      'Memperbanyak sayur, air, dan makan perlahan',
+                    ],
+                  ),
+
+                  // Question 11
+                  _buildMultipleChoiceQuestion(
+                    index: 10,
+                    question:
+                        '11. Siska sangat menyukai makanan cepat saji, jarang mengonsumsi sayur, dan hampir tidak pernah minum air putih. Jika kebiasaan ini dibiarkan terus, apa risiko jangka panjang terhadap sistem pencernaannya?',
+                    options: [
+                      'Sistem pencernaan akan menjadi lebih cepat bekerja',
+                      'Pencernaan jadi lebih kuat terhadap infeksi',
+                      'Siska bisa mengalami gangguan seperti sembelit dan radang lambung',
+                      'Tubuh akan menyerap lebih banyak vitamin',
+                    ],
+                  ),
+
+                  // Question 12
+                  _buildMultipleChoiceQuestion(
+                    index: 11,
+                    question:
+                        '12. Bayangkan kamu memiliki dua teman: satu rajin makan buah dan sayur, satu lagi hanya makan mie instan. Dari sisi pencernaan, perbedaan paling mencolok antara keduanya adalah...',
+                    options: [
+                      'Teman yang makan buah akan sering sakit',
+                      'Teman yang makan mie instan akan punya pencernaan lebih kuat',
+                      'Teman yang makan sehat akan memiliki sistem pencernaan lebih lancar',
+                      'Tidak ada perbedaan yang berarti',
+                    ],
+                  ),
+
+                  // Question 13 (with asset image)
+                  _buildMultipleChoiceQuestion(
+                    index: 12,
+                    question:
+                        '13. Perhatikan gambar sistem pencernaan berikut ini.\n{image}\nJika bagian yang ditandai rusak atau tidak berfungsi, apa akibatnya bagi keseluruhan proses pencernaan?',
+                    options: [
+                      'Pencernaan makanan tetap normal',
+                      'Penyerapan nutrisi menjadi lebih cepat',
+                      'Makanan tidak dapat dicerna secara kimiawi dan berisiko membusuk',
+                      'Organ lain akan menghasilkan feses langsung',
+                    ],
+                    imageAsset: 'assets/images/soal-1.png',
+                  ),
+
+                  // Question 14
+                  _buildMultipleChoiceQuestion(
+                    index: 13,
+                    question:
+                        '14. Kamu melihat poster sistem pencernaan yang tidak mencantumkan usus besar. Informasi penting apa yang hilang dari poster tersebut?',
+                    options: [
+                      'Fungsi pencernaan karbohidrat',
+                      'Proses penghancuran lemak',
+                      'Penyerapan air dan pembentukan feses',
+                      'Proses mengunyah makanan',
+                    ],
+                  ),
+
+                  // Question 15
+                  _buildMultipleChoiceQuestion(
+                    index: 14,
+                    question:
+                        '15. Sebuah infografis menampilkan urutan sistem pencernaan dengan salah posisi: Usus besar ditempatkan sebelum usus halus. Bagaimana kamu memperbaiki urutan tersebut agar sesuai fungsi tiap organ?',
+                    options: [
+                      'Tempatkan anus di awal karena buang sisa makanan',
+                      'Letakkan usus halus setelah lambung dan sebelum usus besar',
+                      'Pindahkan lambung ke akhir sistem',
+                      'Tambahkan ginjal ke dalam urutan pencernaan',
                     ],
                   ),
 
