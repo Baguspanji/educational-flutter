@@ -1,24 +1,43 @@
 import 'package:flutter/material.dart';
-import 'package:gastrofun/utils/utils.dart';
 import '../models/content_models.dart';
+import '../services/sheets_service.dart';
 import '../widgets/custom_button.dart';
+import 'kuis_kerjakan_screen.dart';
+import '../utils/utils.dart';
 
-class KuisSingleScreen extends StatefulWidget {
-  const KuisSingleScreen({super.key});
+class KuisScreen extends StatefulWidget {
+  const KuisScreen({super.key});
 
   @override
-  State<KuisSingleScreen> createState() => _KuisSingleScreenState();
+  State<KuisScreen> createState() => _KuisScreenState();
 }
 
-class _KuisSingleScreenState extends State<KuisSingleScreen> {
+class _KuisScreenState extends State<KuisScreen> {
   late Kuis? kuis;
   bool isLoading = true;
   final ScrollController _scrollController = ScrollController();
   bool _showBackToTop = false;
+  bool _isSubmitting = false;
+
+  // Multiple Choice Section
+  Map<int, int?> multipleChoiceAnswers = {};
+
+  // Text controllers for short answer questions
+  List<TextEditingController> shortAnswerControllers = [];
+
+  // Text controllers for essay questions
+  List<TextEditingController> essayControllers = [];
+
+  // Student info controllers
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController classController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    // Setup controllers for answers
+    _setupControllers();
+
     // Load the kuis data
     _loadKuis();
 
@@ -35,56 +54,54 @@ class _KuisSingleScreenState extends State<KuisSingleScreen> {
     });
   }
 
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
   void _loadKuis() {
     // In a real app, this would be an async operation
     kuis = Kuis(
       id: 'kuis-001',
       title: 'Kuis Formatif Sistem Pencernaan Kelas V',
-      category: 'Biologi',
-      createdAt: DateTime(2025, 7, 15),
+      category: 'IPAS',
+      createdAt: DateTime(2023, 7, 15),
       description:
           'Kuis ini mencakup materi sistem pencernaan manusia dengan berbagai level kognitif dari C2 hingga C6',
       isCompleted: false,
-      questionCount: 15,
+      questionCount: 18,
       timeInMinutes: 45,
-      questions: [
-        // Tujuan 1: Mengurutkan organ dan proses sistem pencernaan (C3 - Mengaplikasi)
-        'Urutkanlah organ-organ sistem pencernaan manusia mulai dari mulut hingga anus!',
-        'Susunlah organ pencernaan manusia berikut sesuai urutan proses pencernaan: usus halus, mulut, anus, lambung, kerongkongan, usus besar!',
-
-        // Tujuan 2: Menjelaskan fungsi organ sistem pencernaan (C2 - Memahami)
-        'Jelaskan fungsi utama dari rongga mulut dalam proses pencernaan makanan!',
-        'Apa fungsi dari lambung dalam proses pencernaan makanan?',
-        'Jelaskan fungsi usus halus dalam sistem pencernaan manusia!',
-
-        // Tujuan 3: Menganalisis proses pencernaan (C4 - Menganalisis)
-        'Bagaimana karbohidrat dicerna di dalam sistem pencernaan manusia? Jelaskan proses dan enzim yang terlibat!',
-        'Bagaimana hubungan antara proses pencernaan mekanik dan kimiawi dalam lambung?',
-        'Bagaimana proses penyerapan nutrisi terjadi di usus halus dan faktor apa saja yang mempengaruhinya?',
-
-        // Tujuan 4: Menyelesaikan masalah seputar gangguan pencernaan (C4 - Menganalisis)
-        'Apa yang mungkin terjadi jika seseorang mengalami kekurangan enzim pencernaan? Jelaskan dampaknya!',
-        'Mengapa mengonsumsi makanan yang terkontaminasi bakteri dapat menyebabkan diare? Jelaskan mekanismenya!',
-
-        // Tujuan 5: Mengaitkan gaya hidup dengan kesehatan pencernaan (C4 - Menganalisis)
-        'Bagaimana pola makan yang tidak teratur dapat mempengaruhi kesehatan sistem pencernaan?',
-        'Jelaskan bagaimana konsumsi makanan berlemak tinggi dalam jangka panjang dapat mempengaruhi sistem pencernaan!',
-
-        // Tujuan 6: Membuat diagram atau infografis proses pencernaan (C6 - Mencipta)
-        'Buatlah diagram sederhana yang menggambarkan proses pencernaan dari mulut hingga anus dengan penjelasan singkat di setiap tahapnya!',
-        'Rancanglah sebuah infografis tentang cara kerja enzim dalam sistem pencernaan manusia!',
-        'Buatlah bagan yang menunjukkan hubungan antara organ pencernaan, zat yang dicerna, dan enzim yang terlibat di dalamnya!',
-      ],
+      questions: [],
     );
     setState(() {
       isLoading = false;
     });
+  }
+
+  // Set up the controllers when the quiz data is loaded
+  void _setupControllers() {
+    // Initialize short answer controllers
+    shortAnswerControllers.clear();
+    for (int i = 0; i < 10; i++) {
+      shortAnswerControllers.add(TextEditingController());
+    }
+
+    // Initialize essay controllers
+    essayControllers.clear();
+    for (int i = 0; i < 5; i++) {
+      essayControllers.add(TextEditingController());
+    }
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    classController.dispose();
+
+    // Dispose all text controllers
+    for (var controller in shortAnswerControllers) {
+      controller.dispose();
+    }
+    for (var controller in essayControllers) {
+      controller.dispose();
+    }
+
+    super.dispose();
   }
 
   @override
@@ -113,16 +130,16 @@ class _KuisSingleScreenState extends State<KuisSingleScreen> {
                     const SizedBox(height: 16),
 
                     // Instructions and objectives
-                    _buildInstructionsCard(),
-                    const SizedBox(height: 24),
+                    // _buildInstructionsCard(),
+                    // const SizedBox(height: 24),
 
                     // Kuis Content Card
                     _buildKuisContentCard(),
                     const SizedBox(height: 24),
 
                     // Sample Questions
-                    _buildSampleQuestionsCard(),
-                    const SizedBox(height: 24),
+                    // _buildSampleQuestionsCard(),
+                    // const SizedBox(height: 24),
 
                     // Strategy Card
                     _buildStrategyCard(),
@@ -174,13 +191,13 @@ class _KuisSingleScreenState extends State<KuisSingleScreen> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(
-            color: _getCategoryColor(kuis!.category).withOpacity(0.2),
+            color: Colors.teal.shade700.withOpacity(0.2),
             borderRadius: BorderRadius.circular(4),
           ),
           child: Text(
             kuis!.category,
             style: TextStyle(
-              color: _getCategoryColor(kuis!.category),
+              color: Colors.teal.shade700,
               fontWeight: FontWeight.bold,
               fontSize: 12,
             ),
@@ -279,182 +296,182 @@ class _KuisSingleScreenState extends State<KuisSingleScreen> {
           ),
 
           // Kisi-kisi soal
-          Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade50,
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(12),
-                bottomRight: Radius.circular(12),
-              ),
-              border: Border(top: BorderSide(color: Colors.grey.shade300)),
-            ),
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.assignment,
-                      color: Theme.of(context).colorScheme.secondary,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Kisi-Kisi Soal',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
+          // Container(
+          //   width: double.infinity,
+          //   decoration: BoxDecoration(
+          //     color: Colors.grey.shade50,
+          //     borderRadius: const BorderRadius.only(
+          //       bottomLeft: Radius.circular(12),
+          //       bottomRight: Radius.circular(12),
+          //     ),
+          //     border: Border(top: BorderSide(color: Colors.grey.shade300)),
+          //   ),
+          //   padding: const EdgeInsets.all(16),
+          //   child: Column(
+          //     crossAxisAlignment: CrossAxisAlignment.start,
+          //     children: [
+          //       Row(
+          //         children: [
+          //           Icon(
+          //             Icons.assignment,
+          //             color: Theme.of(context).colorScheme.secondary,
+          //           ),
+          //           const SizedBox(width: 8),
+          //           Text(
+          //             'Kisi-Kisi Soal',
+          //             style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          //               fontWeight: FontWeight.bold,
+          //               color: Theme.of(context).colorScheme.secondary,
+          //             ),
+          //           ),
+          //         ],
+          //       ),
+          //       const SizedBox(height: 16),
 
-                // Table header
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 12,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.primary.withOpacity(0.1),
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(8),
-                      topRight: Radius.circular(8),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: Text(
-                          'Tujuan Pembelajaran',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          'Level Kognitif',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Text(
-                          'No. Soal',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+          //       // Table header
+          //       Container(
+          //         padding: const EdgeInsets.symmetric(
+          //           vertical: 8,
+          //           horizontal: 12,
+          //         ),
+          //         decoration: BoxDecoration(
+          //           color: Theme.of(
+          //             context,
+          //           ).colorScheme.primary.withOpacity(0.1),
+          //           borderRadius: const BorderRadius.only(
+          //             topLeft: Radius.circular(8),
+          //             topRight: Radius.circular(8),
+          //           ),
+          //         ),
+          //         child: Row(
+          //           children: [
+          //             Expanded(
+          //               flex: 3,
+          //               child: Text(
+          //                 'Tujuan Pembelajaran',
+          //                 style: TextStyle(
+          //                   fontWeight: FontWeight.bold,
+          //                   color: Theme.of(context).colorScheme.primary,
+          //                 ),
+          //               ),
+          //             ),
+          //             Expanded(
+          //               flex: 2,
+          //               child: Text(
+          //                 'Level Kognitif',
+          //                 style: TextStyle(
+          //                   fontWeight: FontWeight.bold,
+          //                   color: Theme.of(context).colorScheme.primary,
+          //                 ),
+          //               ),
+          //             ),
+          //             Expanded(
+          //               flex: 1,
+          //               child: Text(
+          //                 'No. Soal',
+          //                 textAlign: TextAlign.center,
+          //                 style: TextStyle(
+          //                   fontWeight: FontWeight.bold,
+          //                   color: Theme.of(context).colorScheme.primary,
+          //                 ),
+          //               ),
+          //             ),
+          //           ],
+          //         ),
+          //       ),
 
-                // Table rows
-                _buildKisiKisiRow(
-                  'Mengurutkan organ dan proses sistem pencernaan',
-                  'C3 (Mengaplikasi)',
-                  '1-2',
-                ),
-                _buildKisiKisiRow(
-                  'Menjelaskan fungsi organ sistem pencernaan',
-                  'C2 (Memahami)',
-                  '3-5',
-                ),
-                _buildKisiKisiRow(
-                  'Menganalisis proses pencernaan',
-                  'C4 (Menganalisis)',
-                  '6-8',
-                ),
-                _buildKisiKisiRow(
-                  'Menyelesaikan masalah seputar gangguan pencernaan',
-                  'C4 (Menganalisis)',
-                  '9-10',
-                ),
-                _buildKisiKisiRow(
-                  'Mengaitkan gaya hidup dengan kesehatan pencernaan',
-                  'C4 (Menganalisis)',
-                  '11-12',
-                ),
-                _buildKisiKisiRow(
-                  'Membuat diagram atau infografis proses pencernaan',
-                  'C6 (Mencipta)',
-                  '13-15',
-                ),
+          //       // Table rows
+          //       _buildKisiKisiRow(
+          //         'Mengurutkan organ dan proses sistem pencernaan',
+          //         'C3 (Mengaplikasi)',
+          //         '1-2',
+          //       ),
+          //       _buildKisiKisiRow(
+          //         'Menjelaskan fungsi organ sistem pencernaan',
+          //         'C2 (Memahami)',
+          //         '3-5',
+          //       ),
+          //       _buildKisiKisiRow(
+          //         'Menganalisis proses pencernaan',
+          //         'C4 (Menganalisis)',
+          //         '6-8',
+          //       ),
+          //       _buildKisiKisiRow(
+          //         'Menyelesaikan masalah seputar gangguan pencernaan',
+          //         'C4 (Menganalisis)',
+          //         '9-10',
+          //       ),
+          //       _buildKisiKisiRow(
+          //         'Mengaitkan gaya hidup dengan kesehatan pencernaan',
+          //         'C4 (Menganalisis)',
+          //         '11-12',
+          //       ),
+          //       _buildKisiKisiRow(
+          //         'Membuat diagram atau infografis proses pencernaan',
+          //         'C6 (Mencipta)',
+          //         '13-15',
+          //       ),
 
-                const SizedBox(height: 16),
+          //       const SizedBox(height: 16),
 
-                // Bentuk soal legend
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.grey.shade300),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Bentuk Soal:',
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Container(
-                        width: double.infinity,
-                        child: Wrap(
-                          spacing: 16,
-                          runSpacing: 8,
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                _buildSoalTypeBadge('PG', Colors.blue),
-                                const SizedBox(width: 8),
-                                const Text('Pilihan Ganda'),
-                              ],
-                            ),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                _buildSoalTypeBadge('IS', Colors.orange),
-                                const SizedBox(width: 8),
-                                const Text('Isian Singkat'),
-                              ],
-                            ),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                _buildSoalTypeBadge('E', Colors.green),
-                                const SizedBox(width: 8),
-                                const Text('Esai'),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+          //       // Bentuk soal legend
+          //       Container(
+          //         padding: const EdgeInsets.all(12),
+          //         decoration: BoxDecoration(
+          //           color: Colors.grey.shade100,
+          //           borderRadius: BorderRadius.circular(8),
+          //           border: Border.all(color: Colors.grey.shade300),
+          //         ),
+          //         child: Column(
+          //           crossAxisAlignment: CrossAxisAlignment.start,
+          //           children: [
+          //             Text(
+          //               'Bentuk Soal:',
+          //               style: Theme.of(context).textTheme.titleSmall?.copyWith(
+          //                 fontWeight: FontWeight.bold,
+          //               ),
+          //             ),
+          //             const SizedBox(height: 8),
+          //             Container(
+          //               width: double.infinity,
+          //               child: Wrap(
+          //                 spacing: 16,
+          //                 runSpacing: 8,
+          //                 crossAxisAlignment: WrapCrossAlignment.center,
+          //                 children: [
+          //                   Row(
+          //                     mainAxisSize: MainAxisSize.min,
+          //                     children: [
+          //                       _buildSoalTypeBadge('PG', Colors.blue),
+          //                       const SizedBox(width: 8),
+          //                       const Text('Pilihan Ganda'),
+          //                     ],
+          //                   ),
+          //                   Row(
+          //                     mainAxisSize: MainAxisSize.min,
+          //                     children: [
+          //                       _buildSoalTypeBadge('IS', Colors.orange),
+          //                       const SizedBox(width: 8),
+          //                       const Text('Isian Singkat'),
+          //                     ],
+          //                   ),
+          //                   Row(
+          //                     mainAxisSize: MainAxisSize.min,
+          //                     children: [
+          //                       _buildSoalTypeBadge('E', Colors.green),
+          //                       const SizedBox(width: 8),
+          //                       const Text('Esai'),
+          //                     ],
+          //                   ),
+          //                 ],
+          //               ),
+          //             ),
+          //           ],
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
         ],
       ),
     );
@@ -1030,10 +1047,21 @@ class _KuisSingleScreenState extends State<KuisSingleScreen> {
           Expanded(
             child: CustomButton(
               label: kuis!.isCompleted ? 'Kerjakan Lagi' : 'Mulai Kuis',
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Memulai Kuis...')),
+              onPressed: () async {
+                // Navigate to the interactive quiz screen
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => KuisKerjakanScreen(kuis: kuis!),
+                  ),
                 );
+
+                // Update kuis if we got a result back
+                if (result != null && result is Kuis) {
+                  setState(() {
+                    kuis = result;
+                  });
+                }
               },
               backgroundColor: Theme.of(context).colorScheme.secondary,
               textColor: Colors.white,
@@ -1043,24 +1071,5 @@ class _KuisSingleScreenState extends State<KuisSingleScreen> {
         ],
       ),
     );
-  }
-
-  Color _getCategoryColor(String category) {
-    switch (category) {
-      case 'Matematika':
-        return Colors.blue.shade700;
-      case 'Fisika':
-        return Colors.purple.shade700;
-      case 'Bahasa':
-        return Colors.green.shade700;
-      case 'Sosial':
-        return Colors.orange.shade700;
-      case 'Kimia':
-        return Colors.red.shade700;
-      case 'Biologi':
-        return Colors.teal.shade700;
-      default:
-        return Colors.grey.shade700;
-    }
   }
 }

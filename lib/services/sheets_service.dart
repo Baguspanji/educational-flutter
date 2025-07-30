@@ -9,6 +9,7 @@ class SheetsService {
   // Inisialisasi gsheets
   static GSheets? _gsheets;
   static Worksheet? _worksheetLkpd;
+  static Worksheet? _worksheetKuis;
 
   // Inisialisasi
   static Future<bool> init() async {
@@ -74,6 +75,44 @@ class SheetsService {
     }
   }
 
+  // Method untuk menyiapkan worksheet Kuis
+  static Future<void> _initKuisWorksheet() async {
+    if (_gsheets == null) {
+      await init();
+    }
+
+    final ss = await _gsheets!.spreadsheet(_spreadsheetId);
+    _worksheetKuis = await _getWorksheet(ss, 'Kuis Submissions');
+
+    // Buat header jika belum ada
+    final firstRow = [
+      'Timestamp',
+      'Nama',
+      'Kelompok',
+      'MultipleChoice1',
+      'MultipleChoice2',
+      'MultipleChoice3',
+      'MultipleChoice4',
+      'MultipleChoice5',
+      'MultipleChoice6',
+      'MultipleChoice7',
+      'MultipleChoice8',
+      'MultipleChoice9',
+      'MultipleChoice10',
+      'ShortAnswer1',
+      'ShortAnswer2',
+      'ShortAnswer3',
+      'ShortAnswer4',
+      'ShortAnswer5',
+      'Essay1',
+      'Essay2',
+      'Essay3',
+      'Total Score',
+    ];
+
+    await _worksheetKuis!.values.insertRow(1, firstRow);
+  }
+
   // Method untuk menyimpan jawaban LKPD
   static Future<bool> submitLkpd({
     required String name,
@@ -124,6 +163,53 @@ class SheetsService {
       return await _worksheetLkpd!.values.appendRow(newRow);
     } catch (e) {
       print('Error submitting data: $e');
+      return false;
+    }
+  }
+
+  // Method untuk menyimpan jawaban Kuis
+  static Future<bool> submitKuis({
+    required String name,
+    required String group,
+    required Map<String, String> multipleChoiceAnswers,
+    required Map<String, String> shortAnswers,
+    required Map<String, String> essayAnswers,
+    required double totalScore,
+  }) async {
+    if (_worksheetKuis == null) {
+      await _initKuisWorksheet();
+    }
+
+    try {
+      final timestamp = DateTime.now().toIso8601String();
+      final newRow = [
+        timestamp,
+        name,
+        group,
+        multipleChoiceAnswers['mc1'] ?? '',
+        multipleChoiceAnswers['mc2'] ?? '',
+        multipleChoiceAnswers['mc3'] ?? '',
+        multipleChoiceAnswers['mc4'] ?? '',
+        multipleChoiceAnswers['mc5'] ?? '',
+        multipleChoiceAnswers['mc6'] ?? '',
+        multipleChoiceAnswers['mc7'] ?? '',
+        multipleChoiceAnswers['mc8'] ?? '',
+        multipleChoiceAnswers['mc9'] ?? '',
+        multipleChoiceAnswers['mc10'] ?? '',
+        shortAnswers['sa1'] ?? '',
+        shortAnswers['sa2'] ?? '',
+        shortAnswers['sa3'] ?? '',
+        shortAnswers['sa4'] ?? '',
+        shortAnswers['sa5'] ?? '',
+        essayAnswers['essay1'] ?? '',
+        essayAnswers['essay2'] ?? '',
+        essayAnswers['essay3'] ?? '',
+        totalScore.toString(),
+      ];
+
+      return await _worksheetKuis!.values.appendRow(newRow);
+    } catch (e) {
+      print('Error submitting quiz data: $e');
       return false;
     }
   }

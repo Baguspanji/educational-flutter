@@ -29,7 +29,7 @@ class _MateriScreenState extends State<MateriScreen> {
     materi = Materi(
       id: 'bio-001',
       title: 'Sistem Pencernaan',
-      category: 'Biologi',
+      category: 'IPAS',
       createdAt: DateTime(2025, 7, 10),
       description: 'Memahami Sistem Pencernaan Manusia dan Fungsinya',
       chapters: [

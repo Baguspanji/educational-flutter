@@ -134,7 +134,7 @@ class _LkpdScreenState extends State<LkpdScreen> {
     lkpd = LKPD(
       id: 'lkpd-001',
       title: 'LKPD - Sistem Pencernaan Manusia',
-      category: 'Biologi',
+      category: 'IPAS',
       createdAt: DateTime(2025, 7, 10),
       description:
           'Lembar Kerja untuk memahami sistem pencernaan manusia dan fungsinya',
@@ -246,21 +246,29 @@ class _LkpdScreenState extends State<LkpdScreen> {
 
                     // Refleksi Content
                     _buildRefleksiSection(),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 32),
+
+                    // Submit button
+                    Center(
+                      child: CustomButton(
+                        label: _isSubmitting ? 'Mengirim...' : 'Kirim LKPD',
+                        onPressed: _isSubmitting ? () {} : _submitLkpd,
+                      ),
+                    ),
+
+                    const SizedBox(height: 32),
                   ],
                 ),
               ),
             ),
-
-            // Bottom navigation
-            _buildBottomNav(context),
           ],
         ),
 
         // Back to top button
         if (_showBackToTop)
           Positioned(
-            bottom: 90,
+            bottom:
+                20, // Updated from 90 since there's no longer a bottom nav bar
             right: 20,
             child: FloatingActionButton(
               mini: true,
@@ -1110,34 +1118,7 @@ class _LkpdScreenState extends State<LkpdScreen> {
     );
   }
 
-  Widget _buildBottomNav(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            offset: const Offset(0, -4),
-            blurRadius: 8,
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: CustomButton(
-              label: _isSubmitting ? 'Mengirim...' : 'Kirim LKPD',
-              onPressed: _isSubmitting ? () {} : _submitLkpd,
-              backgroundColor: Theme.of(context).colorScheme.secondary,
-              textColor: Colors.white,
-              borderRadius: 8,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Bottom nav method removed as button is now part of main content
 
   Widget _buildStudentInfoInputs() {
     return Card(

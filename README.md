@@ -1,6 +1,6 @@
 # GastroFun - Digestive System Learning App
 
-Aplikasi pembelajaran interaktif yang berfokus pada sistem pencernaan manusia untuk pembelajaran biologi.
+Aplikasi pembelajaran interaktif yang berfokus pada sistem pencernaan manusia untuk pembelajaran ipas.
 
 ## Fitur Utama
 

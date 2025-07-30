@@ -1,7 +1,7 @@
 import 'package:gastrofun/screens/materi_screen.dart';
 import 'package:flutter/material.dart';
 import 'lkpd_screen.dart';
-import 'kuis_single_screen.dart';
+import 'kuis_screen.dart';
 import 'info_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -26,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
     const HomeContentScreen(),
     const MateriScreen(),
     const LkpdScreen(),
-    const KuisSingleScreen(),
+    const KuisScreen(),
     const InfoScreen(),
   ];
 

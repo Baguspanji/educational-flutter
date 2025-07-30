@@ -57,10 +57,14 @@ class StorageService {
         fileName = result.files.single.name;
       }
 
+      print('Selected file: $fileName');
+
       // Generate unique file name
       final timestamp = DateTime.now().millisecondsSinceEpoch.toString();
       final fileExtension = path.extension(fileName);
       final uniqueFileName = 'infografis_$timestamp$fileExtension';
+
+      print('Unique file name: $uniqueFileName');
 
       // Reference untuk path upload
       final ref = _storage.ref().child('lkpd_submissions/$uniqueFileName');
@@ -71,8 +75,9 @@ class StorageService {
       // Dapatkan URL download
       final url = await ref.getDownloadURL();
       return url;
-    } catch (e) {
+    } catch (e, stackTrace) {
       print('Error uploading file: $e');
+      print('Stack trace: $stackTrace');
       return null;
     }
   }
