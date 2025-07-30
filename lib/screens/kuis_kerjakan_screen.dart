@@ -79,11 +79,11 @@ class _KuisKerjakanScreenState extends State<KuisKerjakanScreen> {
 
   // Set up the controllers for the quiz answers
   void _setupControllers() {
-    // Initialize short answer controllers
-    shortAnswerControllers = List.generate(5, (_) => TextEditingController());
+    // Initialize short answer controllers for 10 questions
+    shortAnswerControllers = List.generate(10, (_) => TextEditingController());
 
-    // Initialize essay controllers
-    essayControllers = List.generate(3, (_) => TextEditingController());
+    // Initialize essay controllers for 5 questions
+    essayControllers = List.generate(5, (_) => TextEditingController());
 
     // Initialize multiple choice answers
     multipleChoiceAnswers = {};
@@ -143,7 +143,8 @@ class _KuisKerjakanScreenState extends State<KuisKerjakanScreen> {
       }
 
       // Simple score calculation (just for demonstration)
-      double totalScore = (totalAnswered / 18) * 100;
+      double totalScore =
+          (totalAnswered / 30) * 100; // 15 MC + 10 short answers + 5 essays
 
       // Submit to Google Sheets
       final success = await SheetsService.submitKuis(
@@ -466,33 +467,71 @@ class _KuisKerjakanScreenState extends State<KuisKerjakanScreen> {
                   _buildShortAnswerQuestion(
                     index: 0,
                     question:
-                        '1. Sebutkan urutan organ pencernaan manusia dari mulut hingga anus!',
+                        '1. Seorang dokter kecil menjelaskan bahwa makanan akan melalui serangkaian organ sebelum keluar dari tubuh. Jika proses pencernaan terganggu di salah satu organ tersebut, seluruh sistem bisa terpengaruh. Tulislah urutan organ yang dilalui makanan mulai dari saat dikunyah hingga dikeluarkan dari tubuh.',
                   ),
 
                   // Short Answer 2
                   _buildShortAnswerQuestion(
                     index: 1,
-                    question: '2. Jelaskan fungsi utama dari lambung!',
+                    question:
+                        '2. Bayangkan kamu sedang mengikuti lomba menggambar sistem pencernaan. Namun, gambar temanmu tidak mencantumkan bagian usus besar. Apa fungsi bagian yang hilang tersebut dalam proses pencernaan?',
                   ),
 
                   // Short Answer 3
                   _buildShortAnswerQuestion(
                     index: 2,
                     question:
-                        '3. Apa fungsi utama dari usus halus dalam proses pencernaan?',
+                        '3. Setelah mengonsumsi makanan cepat saji selama beberapa hari berturut-turut, Riko mulai merasa perutnya tidak nyaman dan susah buang air besar. Menurutmu, apa penyebab dari gangguan tersebut dan bagaimana cara mengatasinya?',
                   ),
 
-                  // Short Answer 4
+                  // Short Answer 4 (with image)
                   _buildShortAnswerQuestion(
                     index: 3,
-                    question: '4. Sebutkan 2 enzim pencernaan dan fungsinya!',
+                    question:
+                        '4. Amati gambar sistem pencernaan manusia berikut:\n{image}\nBerdasarkan gambar tersebut, tuliskan dua organ yang berperan penting dalam penyerapan zat gizi dan jelaskan alasannya.',
+                    imageAsset: 'assets/images/soal-2.png',
                   ),
 
                   // Short Answer 5
                   _buildShortAnswerQuestion(
                     index: 4,
                     question:
-                        '5. Apa perbedaan antara pencernaan mekanik dan kimiawi?',
+                        '5. Selama pelajaran IPAS, guru menjelaskan bahwa gaya hidup sangat memengaruhi sistem pencernaan. Tulis satu contoh kebiasaan sehari-hari yang dapat merusak sistem pencernaan dan jelaskan mengapa hal itu berbahaya bagi kesehatan.',
+                  ),
+
+                  // Short Answer 6
+                  _buildShortAnswerQuestion(
+                    index: 5,
+                    question:
+                        '6. Banyak orang menganggap bahwa makanan langsung menjadi energi setelah dimakan. Jelaskan mengapa anggapan tersebut tidak sepenuhnya benar dengan mengaitkan proses pencernaan!',
+                  ),
+
+                  // Short Answer 7
+                  _buildShortAnswerQuestion(
+                    index: 6,
+                    question:
+                        '7. Dalam perjalanan makanan dari mulut hingga anus, setiap organ memiliki peran berbeda. Tulislah satu contoh dampak yang bisa terjadi jika lambung tidak berfungsi sebagaimana mestinya.',
+                  ),
+
+                  // Short Answer 8
+                  _buildShortAnswerQuestion(
+                    index: 7,
+                    question:
+                        '8. Kamu ditugaskan untuk membuat infografis tentang sistem pencernaan. Informasi apa saja yang wajib kamu cantumkan agar infografismu mudah dipahami dan akurat?',
+                  ),
+
+                  // Short Answer 9
+                  _buildShortAnswerQuestion(
+                    index: 8,
+                    question:
+                        '9. Saat kamu sakit perut karena jajan sembarangan, tubuh memberikan sinyal berupa rasa tidak nyaman. Mengapa penting bagi kita untuk memperhatikan sinyal dari tubuh seperti itu?',
+                  ),
+
+                  // Short Answer 10
+                  _buildShortAnswerQuestion(
+                    index: 9,
+                    question:
+                        '10. Seorang peneliti menemukan bahwa banyak siswa tidak tahu perbedaan antara usus halus dan usus besar. Tuliskan satu perbedaan utama antara keduanya dan mengapa itu penting dipahami sejak dini.',
                   ),
 
                   const SizedBox(height: 24),
@@ -508,21 +547,36 @@ class _KuisKerjakanScreenState extends State<KuisKerjakanScreen> {
                   _buildEssayQuestion(
                     index: 0,
                     question:
-                        '1. Bagaimana proses pencernaan karbohidrat terjadi dari awal hingga akhir? Jelaskan enzim yang terlibat!',
+                        '1. Jelaskan peran penting mulut, lambung, dan usus halus dalam proses pencernaan makanan. Buatlah narasi yang menggambarkan bagaimana makanan berubah mulai dari saat masuk ke mulut hingga zat gizinya diserap oleh tubuh.',
                   ),
 
-                  // Essay 2
+                  // Essay 2 (with image)
                   _buildEssayQuestion(
                     index: 1,
                     question:
-                        '2. Jelaskan hubungan antara pola makan sehat dengan kesehatan sistem pencernaan!',
+                        '2. Perhatikan gambar sistem pencernaan di bawah ini:\n{image}\nJika salah satu organ yang ditunjukkan pada gambar mengalami gangguan, bagaimana dampaknya terhadap keseluruhan proses pencernaan dan kesehatan tubuh?',
+                    imageAsset: 'assets/images/soal-3.png',
                   ),
 
                   // Essay 3
                   _buildEssayQuestion(
                     index: 2,
                     question:
-                        '3. Mengapa mengonsumsi makanan yang terkontaminasi bakteri dapat menyebabkan diare? Jelaskan mekanismenya!',
+                        '3. Seorang anak memiliki kebiasaan makan sambil bermain gadget dan menunda buang air besar meskipun sudah merasa ingin. Berdasarkan kebiasaan tersebut, analisis dampaknya terhadap sistem pencernaan dan berikan saran perbaikannya.',
+                  ),
+
+                  // Essay 4
+                  _buildEssayQuestion(
+                    index: 3,
+                    question:
+                        '4. Dalam kegiatan Proyek P5, kamu diminta menyusun kampanye hidup sehat bertema "Cintai Sistem Pencernaanmu!". Tulislah rencana kampanye yang berisi pesan-pesan edukatif, kebiasaan baik, dan cara menyampaikan pesan tersebut kepada teman-teman sekolahmu.',
+                  ),
+
+                  // Essay 5
+                  _buildEssayQuestion(
+                    index: 4,
+                    question:
+                        '5. Buatlah sebuah infografis sederhana atau uraian berbentuk paragraf tentang proses pencernaan manusia, mulai dari makanan masuk ke mulut hingga keluar melalui anus. Jelaskan fungsi masing-masing organ serta keterkaitan antara satu organ dengan lainnya secara sistematis.',
                   ),
 
                   const SizedBox(height: 24),
@@ -722,6 +776,9 @@ class _KuisKerjakanScreenState extends State<KuisKerjakanScreen> {
   Widget _buildShortAnswerQuestion({
     required int index,
     required String question,
+    String? imageUrl,
+    String? imageAsset,
+    String? imageCaption,
   }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16.0),
@@ -733,7 +790,123 @@ class _KuisKerjakanScreenState extends State<KuisKerjakanScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(question, style: const TextStyle(fontWeight: FontWeight.w500)),
+          // Question text might be before image
+          if (!question.contains("{image}"))
+            Text(question, style: const TextStyle(fontWeight: FontWeight.w500)),
+
+          // If there's an image (either from URL or assets), add it
+          if (imageUrl != null || imageAsset != null) ...[
+            const SizedBox(height: 12),
+            // If question contains {image} placeholder, split and insert image at that point
+            if (question.contains("{image}")) ...[
+              Text(
+                question.split("{image}")[0].trim(),
+                style: const TextStyle(fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(height: 12),
+            ],
+
+            // Image with container for better visual
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey.shade200),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: imageAsset != null
+                    ? Image.asset(
+                        imageAsset,
+                        fit: BoxFit.contain,
+                        height: 200,
+                        width: double.infinity,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            height: 200,
+                            width: double.infinity,
+                            color: Colors.grey.shade200,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(Icons.error, color: Colors.red),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Gambar tidak ditemukan: $imageAsset',
+                                  style: const TextStyle(color: Colors.red),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      )
+                    : Image.network(
+                        imageUrl!,
+                        fit: BoxFit.contain,
+                        height: 200,
+                        width: double.infinity,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return SizedBox(
+                            height: 200,
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                value:
+                                    loadingProgress.expectedTotalBytes != null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes!
+                                    : null,
+                              ),
+                            ),
+                          );
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            height: 200,
+                            width: double.infinity,
+                            color: Colors.grey.shade200,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(Icons.error, color: Colors.red),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Gambar tidak dapat dimuat: ${error.toString()}',
+                                  style: const TextStyle(color: Colors.red),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+              ),
+            ),
+
+            // Image caption if provided
+            if (imageCaption != null) ...[
+              const SizedBox(height: 8),
+              Text(
+                imageCaption,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontStyle: FontStyle.italic,
+                  color: Colors.grey.shade600,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+
+            // If question contains {image} placeholder, show the rest of the text after the image
+            if (question.contains("{image}")) ...[
+              const SizedBox(height: 12),
+              Text(
+                question.split("{image}")[1].trim(),
+                style: const TextStyle(fontWeight: FontWeight.w500),
+              ),
+            ],
+          ],
+
           const SizedBox(height: 12),
           TextField(
             controller: shortAnswerControllers[index],
@@ -741,7 +914,7 @@ class _KuisKerjakanScreenState extends State<KuisKerjakanScreen> {
               hintText: 'Jawaban Anda',
               border: OutlineInputBorder(),
             ),
-            maxLines: 2,
+            maxLines: 3,
           ),
         ],
       ),
@@ -749,7 +922,13 @@ class _KuisKerjakanScreenState extends State<KuisKerjakanScreen> {
   }
 
   // Widget untuk soal esai
-  Widget _buildEssayQuestion({required int index, required String question}) {
+  Widget _buildEssayQuestion({
+    required int index,
+    required String question,
+    String? imageUrl,
+    String? imageAsset,
+    String? imageCaption,
+  }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16.0),
       padding: const EdgeInsets.all(16.0),
@@ -760,15 +939,133 @@ class _KuisKerjakanScreenState extends State<KuisKerjakanScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(question, style: const TextStyle(fontWeight: FontWeight.w500)),
+          // Question text might be before image
+          if (!question.contains("{image}"))
+            Text(question, style: const TextStyle(fontWeight: FontWeight.w500)),
+
+          // If there's an image (either from URL or assets), add it
+          if (imageUrl != null || imageAsset != null) ...[
+            const SizedBox(height: 12),
+            // If question contains {image} placeholder, split and insert image at that point
+            if (question.contains("{image}")) ...[
+              Text(
+                question.split("{image}")[0].trim(),
+                style: const TextStyle(fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(height: 12),
+            ],
+
+            // Image with container for better visual
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey.shade200),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: imageAsset != null
+                    ? Image.asset(
+                        imageAsset,
+                        fit: BoxFit.contain,
+                        height: 200,
+                        width: double.infinity,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            height: 200,
+                            width: double.infinity,
+                            color: Colors.grey.shade200,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(Icons.error, color: Colors.red),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Gambar tidak ditemukan: $imageAsset',
+                                  style: const TextStyle(color: Colors.red),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      )
+                    : Image.network(
+                        imageUrl!,
+                        fit: BoxFit.contain,
+                        height: 200,
+                        width: double.infinity,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return SizedBox(
+                            height: 200,
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                value:
+                                    loadingProgress.expectedTotalBytes != null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes!
+                                    : null,
+                              ),
+                            ),
+                          );
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            height: 200,
+                            width: double.infinity,
+                            color: Colors.grey.shade200,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(Icons.error, color: Colors.red),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Gambar tidak dapat dimuat: ${error.toString()}',
+                                  style: const TextStyle(color: Colors.red),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+              ),
+            ),
+
+            // Image caption if provided
+            if (imageCaption != null) ...[
+              const SizedBox(height: 8),
+              Text(
+                imageCaption,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontStyle: FontStyle.italic,
+                  color: Colors.grey.shade600,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+
+            // If question contains {image} placeholder, show the rest of the text after the image
+            if (question.contains("{image}")) ...[
+              const SizedBox(height: 12),
+              Text(
+                question.split("{image}")[1].trim(),
+                style: const TextStyle(fontWeight: FontWeight.w500),
+              ),
+            ],
+          ],
+
           const SizedBox(height: 12),
           TextField(
             controller: essayControllers[index],
             decoration: const InputDecoration(
               hintText: 'Jawaban Anda',
               border: OutlineInputBorder(),
+              counterText: '',
             ),
-            maxLines: 5,
+            maxLines: 8,
+            maxLength: 2000,
           ),
         ],
       ),
