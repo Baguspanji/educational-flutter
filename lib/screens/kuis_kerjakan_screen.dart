@@ -293,17 +293,19 @@ class _KuisKerjakanScreenState extends State<KuisKerjakanScreen> {
                     options: ['Usus halus', 'Lambung', 'Mulut', 'Kerongkongan'],
                   ),
 
-                  // Question 5
+                  // Question 5 (with asset image)
                   _buildMultipleChoiceQuestion(
                     index: 4,
                     question:
-                        '5. Proses penyerapan air terutama terjadi pada...',
+                        '5. Perhatikan gambar sistem pencernaan berikut ini.\n{image}\nBagian yang ditandai dengan X adalah organ dimana proses penyerapan air terutama terjadi. Organ tersebut adalah...',
                     options: [
                       'Usus besar',
                       'Usus halus',
                       'Lambung',
                       'Kerongkongan',
                     ],
+                    imageAsset: 'assets/images/soal-1.png',
+                    // imageCaption: 'Gambar 1. Sistem pencernaan manusia.',
                   ),
 
                   // Question 6
@@ -327,12 +329,21 @@ class _KuisKerjakanScreenState extends State<KuisKerjakanScreen> {
                     options: ['Anus', 'Rektum', 'Usus besar', 'Usus halus'],
                   ),
 
-                  // Question 8
+                  // Question 8 (with image)
                   _buildMultipleChoiceQuestion(
                     index: 7,
                     question:
-                        '8. Cairan empedu yang membantu mencerna lemak dihasilkan oleh...',
-                    options: ['Hati', 'Pankreas', 'Lambung', 'Usus halus'],
+                        'Perhatikan gambar sistem pencernaan berikut ini.\n{image}\nJika bagian yang ditandai dengan huruf A rusak atau tidak berfungsi, apa akibatnya bagi keseluruhan proses pencernaan?',
+                    options: [
+                      'Pencernaan lemak terganggu karena cairan empedu tidak dapat diproduksi',
+                      'Penyerapan air terganggu sehingga terjadi diare',
+                      'Pencernaan karbohidrat tidak bisa dimulai karena tidak ada enzim amilase',
+                      'Makanan tidak dapat masuk ke lambung',
+                    ],
+                    imageUrl:
+                        'https://sistem.bio/wp-content/uploads/2019/12/sistem-pencernaan-manusia.png',
+                    imageCaption:
+                        'Gambar 2. Organ hati (A) dalam sistem pencernaan manusia.',
                   ),
 
                   // Question 9
@@ -470,6 +481,9 @@ class _KuisKerjakanScreenState extends State<KuisKerjakanScreen> {
     required int index,
     required String question,
     required List<String> options,
+    String? imageUrl,
+    String? imageAsset,
+    String? imageCaption,
   }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16.0),
@@ -481,7 +495,123 @@ class _KuisKerjakanScreenState extends State<KuisKerjakanScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(question, style: const TextStyle(fontWeight: FontWeight.w500)),
+          // Question text might be before image
+          if (!question.contains("{image}"))
+            Text(question, style: const TextStyle(fontWeight: FontWeight.w500)),
+
+          // If there's an image (either from URL or assets), add it
+          if (imageUrl != null || imageAsset != null) ...[
+            const SizedBox(height: 12),
+            // If question contains {image} placeholder, split and insert image at that point
+            if (question.contains("{image}")) ...[
+              Text(
+                question.split("{image}")[0].trim(),
+                style: const TextStyle(fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(height: 12),
+            ],
+
+            // Image with container for better visual
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey.shade200),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: imageAsset != null
+                    ? Image.asset(
+                        imageAsset,
+                        fit: BoxFit.contain,
+                        height: 200,
+                        width: double.infinity,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            height: 200,
+                            width: double.infinity,
+                            color: Colors.grey.shade200,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(Icons.error, color: Colors.red),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Gambar tidak ditemukan: $imageAsset',
+                                  style: const TextStyle(color: Colors.red),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      )
+                    : Image.network(
+                        imageUrl!,
+                        fit: BoxFit.contain,
+                        height: 200,
+                        width: double.infinity,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return SizedBox(
+                            height: 200,
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                value:
+                                    loadingProgress.expectedTotalBytes != null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes!
+                                    : null,
+                              ),
+                            ),
+                          );
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            height: 200,
+                            width: double.infinity,
+                            color: Colors.grey.shade200,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(Icons.error, color: Colors.red),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Gambar tidak dapat dimuat: ${error.toString()}',
+                                  style: const TextStyle(color: Colors.red),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+              ),
+            ),
+
+            // Image caption if provided
+            if (imageCaption != null) ...[
+              const SizedBox(height: 8),
+              Text(
+                imageCaption,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontStyle: FontStyle.italic,
+                  color: Colors.grey.shade600,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+
+            // If question contains {image} placeholder, show the rest of the text after the image
+            if (question.contains("{image}")) ...[
+              const SizedBox(height: 12),
+              Text(
+                question.split("{image}")[1].trim(),
+                style: const TextStyle(fontWeight: FontWeight.w500),
+              ),
+            ],
+          ],
+
           const SizedBox(height: 12),
           ...List.generate(options.length, (optionIndex) {
             return RadioListTile<int>(
