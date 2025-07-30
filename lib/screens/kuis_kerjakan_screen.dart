@@ -112,7 +112,12 @@ class _KuisKerjakanScreenState extends State<KuisKerjakanScreen> {
       // Prepare multiple choice answers
       Map<String, String> mcAnswers = {};
       multipleChoiceAnswers.forEach((index, answer) {
-        mcAnswers['mc${index + 1}'] = answer?.toString() ?? '';
+        // Convert numeric answers to letters: 0=A, 1=B, 2=C, 3=D
+        String letterAnswer = '';
+        if (answer != null) {
+          letterAnswer = String.fromCharCode('A'.codeUnitAt(0) + answer);
+        }
+        mcAnswers['mc${index + 1}'] = letterAnswer;
       });
 
       // Prepare short answers
