@@ -132,7 +132,7 @@ class InfoScreen extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             const Text(
-              'Dikembangkan sebagai bagian dari penelitian untuk meningkatkan efektivitas pembelajaran biologi, khususnya pada topik sistem pencernaan manusia.',
+              'Dikembangkan sebagai bagian dari penelitian untuk meningkatkan efektivitas pembelajaran IPAS, khususnya pada topik sistem pencernaan manusia.',
               style: TextStyle(height: 1.5),
             ),
           ],

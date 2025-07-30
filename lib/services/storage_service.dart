@@ -66,11 +66,25 @@ class StorageService {
 
       print('Unique file name: $uniqueFileName');
 
-      // Reference untuk path upload
-      final ref = _storage.ref().child('lkpd_submissions/$uniqueFileName');
+      // Reference untuk path upload - fix the path to match method name
+      final ref = _storage.ref().child('infografis/$uniqueFileName');
 
-      // Upload file
-      await ref.putFile(file);
+      // Upload file with metadata
+      final metadata = SettableMetadata(
+        contentType: _getContentType(fileExtension),
+        customMetadata: {'uploaded': DateTime.now().toString()},
+      );
+
+      // Upload with progress tracking (optional)
+      final uploadTask = ref.putFile(file, metadata);
+
+      // Wait for upload to complete
+      await uploadTask;
+
+      // Check for errors
+      if (uploadTask.snapshot.state == TaskState.error) {
+        throw Exception('Upload failed: ${uploadTask.snapshot.state}');
+      }
 
       // Dapatkan URL download
       final url = await ref.getDownloadURL();
@@ -78,7 +92,28 @@ class StorageService {
     } catch (e, stackTrace) {
       print('Error uploading file: $e');
       print('Stack trace: $stackTrace');
+
+      // Consider showing a user-friendly error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error uploading file: ${e.toString()}')),
+      );
+
       return null;
+    }
+  }
+
+  // Helper method to determine content type
+  String _getContentType(String extension) {
+    switch (extension.toLowerCase()) {
+      case '.jpg':
+      case '.jpeg':
+        return 'image/jpeg';
+      case '.png':
+        return 'image/png';
+      case '.pdf':
+        return 'application/pdf';
+      default:
+        return 'application/octet-stream';
     }
   }
 }
