@@ -72,6 +72,8 @@ class _LkpdScreenState extends State<LkpdScreen> {
   String? _infografisUrl;
   bool _isSubmitting = false;
   bool _isUploading = false;
+  bool _isNameEmpty = false;
+  bool _submitAttempted = false;
 
   @override
   void initState() {
@@ -358,13 +360,19 @@ class _LkpdScreenState extends State<LkpdScreen> {
       vertical: 8,
     ),
   }) {
+    // Check if field is empty for border styling
+    bool isEmpty = controller.text.trim().isEmpty;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
         color: Colors.grey.shade50,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(
+          color: isEmpty ? Colors.red.withOpacity(0.5) : Colors.grey.shade300,
+          width: isEmpty ? 2.0 : 1.0,
+        ),
       ),
       child: TextField(
         controller: controller,
@@ -374,6 +382,14 @@ class _LkpdScreenState extends State<LkpdScreen> {
           border: InputBorder.none,
           contentPadding: contentPadding,
         ),
+        onChanged: (value) {
+          // Force rebuild on text change to update border color
+          if (isEmpty != (value.trim().isEmpty)) {
+            setState(() {
+              // This setState forces a rebuild with new isEmpty value
+            });
+          }
+        },
       ),
     );
   }
@@ -491,12 +507,18 @@ class _LkpdScreenState extends State<LkpdScreen> {
     TextEditingController controller, {
     int maxLength = 1,
   }) {
+    // Check if field is empty for border styling
+    bool isEmpty = controller.text.trim().isEmpty;
+
     return Container(
       height: 32,
       decoration: BoxDecoration(
         color: Colors.grey.shade50,
         borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(
+          color: isEmpty ? Colors.red.withOpacity(0.5) : Colors.grey.shade300,
+          width: isEmpty ? 2.0 : 1.0,
+        ),
       ),
       child: TextField(
         controller: controller,
@@ -514,6 +536,14 @@ class _LkpdScreenState extends State<LkpdScreen> {
           FilteringTextInputFormatter.digitsOnly,
           FilteringTextInputFormatter.allow(RegExp(r'^[1-7]$')),
         ],
+        onChanged: (value) {
+          // Force rebuild on text change to update border color
+          if (isEmpty != (value.trim().isEmpty)) {
+            setState(() {
+              // This setState forces a rebuild with new isEmpty value
+            });
+          }
+        },
       ),
     );
   }
@@ -562,12 +592,18 @@ class _LkpdScreenState extends State<LkpdScreen> {
 
   // Helper method to build function input text field
   Widget _buildFunctionInput(TextEditingController controller) {
+    // Check if field is empty for border styling
+    bool isEmpty = controller.text.trim().isEmpty;
+
     return Container(
       height: 40,
       decoration: BoxDecoration(
         color: Colors.grey.shade50,
         borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(
+          color: isEmpty ? Colors.red.withOpacity(0.5) : Colors.grey.shade300,
+          width: isEmpty ? 2.0 : 1.0,
+        ),
       ),
       child: TextField(
         controller: controller,
@@ -578,6 +614,14 @@ class _LkpdScreenState extends State<LkpdScreen> {
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         ),
+        onChanged: (value) {
+          // Force rebuild on text change to update border color
+          if (isEmpty != (value.trim().isEmpty)) {
+            setState(() {
+              // This setState forces a rebuild with new isEmpty value
+            });
+          }
+        },
       ),
     );
   }
@@ -835,8 +879,65 @@ class _LkpdScreenState extends State<LkpdScreen> {
 
   // Method untuk submit LKPD
   Future<void> _submitLkpd() async {
-    // Validasi input
-    if (_nameController.text.trim().isEmpty) {
+    // Set flag submit attempted
+    setState(() {
+      _submitAttempted = true;
+    });
+
+    // Validasi input dan hitung field yang kosong
+    int emptyFieldsCount = 0;
+
+    // Periksa nama (wajib diisi)
+    bool isNameEmpty = _nameController.text.trim().isEmpty;
+    if (isNameEmpty) {
+      emptyFieldsCount++;
+    }
+
+    // Periksa jawaban-jawaban
+    if (_question1Controller.text.trim().isEmpty) emptyFieldsCount++;
+    if (_question2Controller.text.trim().isEmpty) emptyFieldsCount++;
+    if (_question3Controller.text.trim().isEmpty) emptyFieldsCount++;
+    if (_question4Controller.text.trim().isEmpty) emptyFieldsCount++;
+    if (_question5Controller.text.trim().isEmpty) emptyFieldsCount++;
+    if (_question6Controller.text.trim().isEmpty) emptyFieldsCount++;
+    if (_question8Controller.text.trim().isEmpty) emptyFieldsCount++;
+    if (_question9Controller.text.trim().isEmpty) emptyFieldsCount++;
+    if (_question10Controller.text.trim().isEmpty) emptyFieldsCount++;
+
+    // Periksa organ ordering
+    if (_organOrderRonggaMulutController.text.trim().isEmpty)
+      emptyFieldsCount++;
+    if (_organOrderKerongkonganController.text.trim().isEmpty)
+      emptyFieldsCount++;
+    if (_organOrderLambungController.text.trim().isEmpty) emptyFieldsCount++;
+    if (_organOrderUsusHalusController.text.trim().isEmpty) emptyFieldsCount++;
+    if (_organOrderUsusBesarController.text.trim().isEmpty) emptyFieldsCount++;
+    if (_organOrderRektumController.text.trim().isEmpty) emptyFieldsCount++;
+    if (_organOrderAnusController.text.trim().isEmpty) emptyFieldsCount++;
+
+    // Periksa organ functions
+    if (_organFunctionRonggaMulutController.text.trim().isEmpty)
+      emptyFieldsCount++;
+    if (_organFunctionKerongkonganController.text.trim().isEmpty)
+      emptyFieldsCount++;
+    if (_organFunctionLambungController.text.trim().isEmpty) emptyFieldsCount++;
+    if (_organFunctionUsusHalusController.text.trim().isEmpty)
+      emptyFieldsCount++;
+    if (_organFunctionUsusBesarController.text.trim().isEmpty)
+      emptyFieldsCount++;
+    if (_organFunctionRektumController.text.trim().isEmpty) emptyFieldsCount++;
+    if (_organFunctionAnusController.text.trim().isEmpty) emptyFieldsCount++;
+
+    // Periksa infografis
+    if (_infografisUrl == null) emptyFieldsCount++;
+
+    // Update UI untuk border merah pada nama
+    setState(() {
+      _isNameEmpty = isNameEmpty;
+    });
+
+    // Jika nama kosong, tampilkan snackbar
+    if (isNameEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Nama tidak boleh kosong'),
@@ -844,6 +945,37 @@ class _LkpdScreenState extends State<LkpdScreen> {
         ),
       );
       return;
+    }
+
+    // Jika ada field yang kosong, tampilkan dialog konfirmasi
+    if (emptyFieldsCount > 0) {
+      bool? confirm = await showDialog<bool>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Konfirmasi Pengiriman'),
+            content: Text(
+              'Apakah anda yakin mengirim LKPD?\n\nTerdapat $emptyFieldsCount isian masih belum diisi!',
+              style: const TextStyle(height: 1.5),
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Batal'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text('Kirim'),
+              ),
+            ],
+          );
+        },
+      );
+
+      // Jika user membatalkan, keluar dari method
+      if (confirm != true) {
+        return;
+      }
     }
 
     setState(() {
@@ -1000,7 +1132,12 @@ class _LkpdScreenState extends State<LkpdScreen> {
                   border: Border.all(
                     color: _infografisUrl != null
                         ? Colors.green.shade300
-                        : Colors.grey.shade300,
+                        : (_infografisUrl == null && _submitAttempted
+                              ? Colors.red.withOpacity(0.7)
+                              : Colors.grey.shade300),
+                    width: (_infografisUrl == null && _submitAttempted)
+                        ? 2.0
+                        : 1.0,
                   ),
                 ),
                 child: Column(
@@ -1195,16 +1332,41 @@ class _LkpdScreenState extends State<LkpdScreen> {
             const SizedBox(height: 8),
             TextField(
               controller: _nameController,
+              onChanged: (value) {
+                // Reset the error state when user types
+                if (_isNameEmpty && value.trim().isNotEmpty) {
+                  setState(() {
+                    _isNameEmpty = false;
+                  });
+                }
+              },
               decoration: InputDecoration(
                 hintText: 'Masukkan nama lengkap',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: BorderSide(color: Colors.grey.shade300),
                 ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(
+                    color: _isNameEmpty ? Colors.red : Colors.grey.shade300,
+                    width: _isNameEmpty ? 2.0 : 1.0,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(
+                    color: _isNameEmpty
+                        ? Colors.red
+                        : Theme.of(context).colorScheme.primary,
+                    width: 2.0,
+                  ),
+                ),
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 12,
                   vertical: 12,
                 ),
+                errorText: _isNameEmpty ? 'Nama wajib diisi' : null,
               ),
             ),
             const SizedBox(height: 16),
