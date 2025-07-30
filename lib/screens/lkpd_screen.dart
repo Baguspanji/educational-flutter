@@ -71,6 +71,7 @@ class _LkpdScreenState extends State<LkpdScreen> {
   // Variable untuk menyimpan URL infografis yang diupload
   String? _infografisUrl;
   bool _isSubmitting = false;
+  bool _isUploading = false;
 
   @override
   void initState() {
@@ -796,20 +797,39 @@ class _LkpdScreenState extends State<LkpdScreen> {
 
   // Method untuk upload infografis
   Future<void> _uploadInfografis() async {
-    final storageService = StorageService();
-    final url = await storageService.uploadInfografis(context);
+    // Show loading state
+    setState(() {
+      _isUploading = true;
+    });
 
-    if (url != null) {
-      setState(() {
-        _infografisUrl = url;
-      });
+    try {
+      final storageService = StorageService();
+      final url = await storageService.uploadInfografis(context);
 
+      if (url != null) {
+        setState(() {
+          _infografisUrl = url;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Infografis berhasil diunggah!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Infografis berhasil diunggah!'),
-          backgroundColor: Colors.green,
+        SnackBar(
+          content: Text('Gagal mengunggah infografis: ${e.toString()}'),
+          backgroundColor: Colors.red,
         ),
       );
+    } finally {
+      // Hide loading state
+      setState(() {
+        _isUploading = false;
+      });
     }
   }
 
@@ -967,7 +987,7 @@ class _LkpdScreenState extends State<LkpdScreen> {
             ),
             const SizedBox(height: 12),
             InkWell(
-              onTap: _uploadInfografis,
+              onTap: _isUploading ? null : _uploadInfografis,
               child: Container(
                 width: double.infinity,
                 height: 120,
@@ -986,40 +1006,58 @@ class _LkpdScreenState extends State<LkpdScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      _infografisUrl != null
-                          ? Icons.check_circle
-                          : Icons.upload_file,
-                      size: 32,
-                      color: _infografisUrl != null
-                          ? Colors.green
-                          : Theme.of(
-                              context,
-                            ).colorScheme.primary.withOpacity(0.5),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      _infografisUrl != null
-                          ? 'Infografis berhasil diunggah'
-                          : 'Unggah infografis Anda di sini',
-                      style: TextStyle(
-                        color: _infografisUrl != null
-                            ? Colors.green
-                            : Theme.of(
-                                context,
-                              ).colorScheme.primary.withOpacity(0.7),
+                    if (_isUploading)
+                      Column(
+                        children: [
+                          CircularProgressIndicator(),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Mengunggah infografis...',
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                        ],
+                      )
+                    else
+                      Column(
+                        children: [
+                          Icon(
+                            _infografisUrl != null
+                                ? Icons.check_circle
+                                : Icons.upload_file,
+                            size: 32,
+                            color: _infografisUrl != null
+                                ? Colors.green
+                                : Theme.of(
+                                    context,
+                                  ).colorScheme.primary.withOpacity(0.5),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            _infografisUrl != null
+                                ? 'Infografis berhasil diunggah'
+                                : 'Unggah infografis Anda di sini',
+                            style: TextStyle(
+                              color: _infografisUrl != null
+                                  ? Colors.green
+                                  : Theme.of(
+                                      context,
+                                    ).colorScheme.primary.withOpacity(0.7),
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            _infografisUrl != null
+                                ? 'Klik untuk mengganti'
+                                : 'Format: JPG, PNG atau PDF (maks. 5MB)',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      _infografisUrl != null
-                          ? 'Klik untuk mengganti'
-                          : 'Format: JPG, PNG atau PDF (maks. 5MB)',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey.shade600,
-                      ),
-                    ),
                   ],
                 ),
               ),
